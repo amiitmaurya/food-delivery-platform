@@ -1,0 +1,212 @@
+/* Payment History Component Styles */
+.payment-history-page {
+  padding-bottom: 2rem;
+}
+
+.stat-card {
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  transition: all 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+}
+
+.bg-primary-subtle {
+  background: rgba(255, 82, 0, 0.1);
+}
+
+.bg-success-subtle {
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.bg-warning-subtle {
+  background: rgba(245, 158, 11, 0.1);
+}
+
+.bg-info-subtle {
+  background: rgba(59, 130, 246, 0.1);
+}
+
+/* Modern Filter Toolbar */
+.filter-toolbar-card {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 16px;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  padding: 0.85rem 1.15rem;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.03);
+}
+
+.toolbar-flex-container {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+}
+
+.toolbar-search-box {
+  flex: 1 1 280px;
+  position: relative;
+}
+
+.search-leading-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+  font-size: 0.95rem;
+  pointer-events: none;
+}
+
+.toolbar-search-input {
+  width: 100%;
+  padding-left: 2.65rem;
+  padding-right: 2.2rem;
+  border-radius: 12px;
+  border: 1.5px solid #e2e8f0;
+  height: 42px;
+  font-size: 0.88rem;
+  background-color: #f8fafc;
+  color: #1e293b;
+  transition: all 0.2s ease;
+}
+
+.toolbar-search-input:focus {
+  background-color: #ffffff;
+  border-color: #ff5200;
+  box-shadow: 0 0 0 3px rgba(255, 82, 0, 0.12);
+  outline: none;
+}
+
+.search-clear-btn {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 4px 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s;
+}
+
+.search-clear-btn:hover {
+  color: #ef4444;
+}
+
+.toolbar-filter-item {
+  flex: 0 1 auto;
+  min-width: 190px;
+}
+
+.toolbar-select {
+  height: 42px;
+  border-radius: 12px;
+  border: 1.5px solid #e2e8f0;
+  font-size: 0.86rem;
+  font-weight: 500;
+  color: #334155;
+  background-color: #f8fafc;
+  padding: 0 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.toolbar-select:focus {
+  background-color: #ffffff;
+  border-color: #ff5200;
+  box-shadow: 0 0 0 3px rgba(255, 82, 0, 0.12);
+  outline: none;
+}
+
+.btn-reset-filter {
+  height: 42px;
+  border-radius: 12px;
+  font-size: 0.84rem;
+  font-weight: 600;
+  padding: 0 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: all 0.2s ease;
+}
+
+.custom-payment-table thead th {
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 700;
+  color: #475569;
+  padding: 0.85rem 1rem;
+}
+
+.custom-payment-table tbody td {
+  padding: 1rem 1rem;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.6);
+}
+
+.avatar-circle-sm {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff6b2b, #ff5200);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.payment-mode-pill {
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 0.3rem 0.65rem;
+  border-radius: 20px;
+  background: #f1f5f9;
+  color: #334155;
+  border: 1px solid #e2e8f0;
+}
+
+.payment-mode-pill.mode-upi {
+  background: rgba(245, 158, 11, 0.08);
+  color: #b45309;
+  border-color: rgba(245, 158, 11, 0.25);
+}
+
+.payment-mode-pill.mode-cod {
+  background: rgba(59, 130, 246, 0.08);
+  color: #1d4ed8;
+  border-color: rgba(59, 130, 246, 0.25);
+}
+
+.status-dot {
+  font-size: 0.45rem;
+  vertical-align: middle;
+}
+
+.empty-state-box {
+  padding: 2rem 1rem;
+}

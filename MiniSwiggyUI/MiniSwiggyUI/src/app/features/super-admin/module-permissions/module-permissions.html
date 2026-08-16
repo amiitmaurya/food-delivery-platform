@@ -1,0 +1,233 @@
+<div class="permissions-master-container container-fluid px-lg-4 py-3">
+  <!-- Page Header Card -->
+  <div class="page-header-card glass-card mb-4">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+      <div>
+        <div class="header-pill-badge">
+          <i class="fa-solid fa-key text-warning me-1"></i> Role-Based Access & Visibility Master
+        </div>
+        <h2 class="page-title">User Module Access Control</h2>
+        <p class="page-subtitle">
+          Manage and configure which sidebar modules and master controls are visible and accessible for each user in the database.
+        </p>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <a routerLink="/superadmin/dashboard" class="btn btn-outline-secondary btn-header-outline">
+          <i class="fa-solid fa-arrow-left me-1"></i> Back to Dashboard
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoadingUsers" class="glass-card loading-box text-center my-4 p-5">
+    <i class="fa-solid fa-circle-notch fa-spin fa-2x text-primary mb-3"></i>
+    <h5>Loading user directory from database...</h5>
+  </div>
+
+  <div *ngIf="!isLoadingUsers">
+    <!-- TOP: User Selector Bar & Quick User Chips -->
+    <div class="glass-card user-selector-card p-3 mb-4">
+      <div class="row align-items-center g-3">
+        <div class="col-md-5 col-lg-4">
+          <label class="form-label fw-bold text-dark small mb-1">
+            <i class="fa-solid fa-user-check text-primary me-1"></i> Select User to Configure:
+          </label>
+          <select 
+            class="form-select user-dropdown-select" 
+            [ngModel]="selectedUser?.id" 
+            (ngModelChange)="onUserDropdownChange($event)"
+          >
+            <option *ngFor="let u of users" [value]="u.id">
+              {{ u.fullName }} ({{ u.roleName }}) &mdash; {{ u.email }}
+            </option>
+          </select>
+        </div>
+
+        <div class="col-md-7 col-lg-8">
+          <label class="form-label fw-bold text-muted small mb-1">Quick Select User:</label>
+          <div class="quick-user-chips d-flex flex-wrap gap-2">
+            <button 
+              *ngFor="let u of users" 
+              class="btn btn-sm quick-chip"
+              [class.chip-active]="selectedUser?.id === u.id"
+              (click)="selectUser(u)"
+            >
+              <span class="chip-avatar" [class.chip-avatar-gold]="u.roleName === 'SuperAdmin'">
+                {{ u.fullName.charAt(0).toUpperCase() }}
+              </span>
+              <span class="chip-name">{{ u.fullName }}</span>
+              <span class="badge chip-role-badge" [ngClass]="{
+                'bg-warning text-dark': u.roleName === 'SuperAdmin',
+                'bg-primary': u.roleName === 'Admin',
+                'bg-success': u.roleName === 'Customer',
+                'bg-danger': u.roleName === 'DeliveryPartner' || u.roleName === 'DeliveryBoy'
+              }">{{ u.roleName }}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active User Status Bar & Save Actions -->
+    <div *ngIf="selectedUser" class="glass-card active-user-bar p-3 mb-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+      <div class="d-flex align-items-center gap-3">
+        <div class="user-main-avatar">
+          {{ selectedUser.fullName.charAt(0).toUpperCase() }}
+        </div>
+        <div>
+          <div class="d-flex align-items-center gap-2">
+            <h4 class="mb-0 fw-bold text-dark">{{ selectedUser.fullName }}</h4>
+            <span class="badge px-2 py-1" [ngClass]="{
+              'bg-warning text-dark': selectedUser.roleName === 'SuperAdmin',
+              'bg-primary': selectedUser.roleName === 'Admin',
+              'bg-success': selectedUser.roleName === 'Customer',
+              'bg-danger': selectedUser.roleName === 'DeliveryPartner' || selectedUser.roleName === 'DeliveryBoy'
+            }">{{ selectedUser.roleName }}</span>
+          </div>
+          <div class="text-muted small mt-1">
+            <span><i class="fa-solid fa-envelope me-1"></i> {{ selectedUser.email }}</span> &bull; 
+            <strong class="text-success">{{ enabledCount }} of {{ permissions.length }} Modules Allowed</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <button class="btn btn-sm btn-outline-success btn-action" (click)="setAll(true)" title="Grant all modules">
+          <i class="fa-solid fa-check-double me-1"></i> Enable All
+        </button>
+        <button class="btn btn-sm btn-outline-secondary btn-action" (click)="setAll(false)" title="Deny all modules">
+          <i class="fa-solid fa-ban me-1"></i> Disable All
+        </button>
+        <!--<button class="btn btn-sm btn-outline-danger btn-action" (click)="resetToDefaults()" title="Reset to role default rules">
+          <i class="fa-solid fa-arrows-rotate me-1"></i> Role Defaults
+        </button>-->
+        <button class="btn btn-primary btn-save-database" (click)="savePermissions()" [disabled]="isSaving">
+          <span *ngIf="!isSaving"><i class="fa-solid fa-floppy-disk me-1"></i> Save </span>
+          <span *ngIf="isSaving"><i class="fa-solid fa-spinner fa-spin me-1"></i> Saving...</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Categorized Modules Grid -->
+    <div class="permissions-content-area mb-4">
+      <!-- 1. Customer & Food Modules (5) -->
+      <div class="module-section-box mb-4">
+        <div class="section-title-bar mb-3">
+          <h5 class="section-heading-txt text-emerald">
+            <i class="fa-solid fa-utensils me-2"></i> 1. Customer & Food Discovery Modules
+          </h5>
+          <p class="text-muted small mb-0">Standard consumer portals and ordering modules.</p>
+        </div>
+
+        <div class="modules-cards-grid">
+          <div 
+            *ngFor="let perm of customerModules" 
+            class="module-card glass-card"
+            [class.module-card-active]="perm.isAllowed"
+            (click)="togglePermission(perm)"
+          >
+            <div class="d-flex align-items-center gap-3">
+              <div class="mod-icon-box" [ngClass]="perm.isAllowed ? 'icon-emerald-active' : 'icon-inactive'">
+                <i [class]="perm.iconClass"></i>
+              </div>
+              <div class="mod-meta">
+                <h6 class="mod-title mb-1">{{ perm.moduleName }}</h6>
+                <span class="mod-path-badge">{{ perm.routePath }}</span>
+              </div>
+            </div>
+
+            <div class="d-flex align-items-center gap-2">
+              <span class="status-indicator-tag" [class.tag-allowed]="perm.isAllowed">
+                {{ perm.isAllowed ? 'ALLOWED' : 'DENIED' }}
+              </span>
+              <label class="switch-toggle" (click)="$event.stopPropagation()">
+                <input type="checkbox" [checked]="perm.isAllowed" (change)="togglePermission(perm)" />
+                <span class="slider-round"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Admin & Kitchen Operations (6) -->
+      <div class="module-section-box mb-4">
+        <div class="section-title-bar mb-3">
+          <h5 class="section-heading-txt text-sapphire">
+            <i class="fa-solid fa-store me-2"></i> 2. Restaurant & Kitchen Admin Operations
+          </h5>
+          <p class="text-muted small mb-0">Operational control for restaurants, dishes, categories, and coupons.</p>
+        </div>
+
+        <div class="modules-cards-grid">
+          <div 
+            *ngFor="let perm of adminModules" 
+            class="module-card glass-card"
+            [class.module-card-active]="perm.isAllowed"
+            (click)="togglePermission(perm)"
+          >
+            <div class="d-flex align-items-center gap-3">
+              <div class="mod-icon-box" [ngClass]="perm.isAllowed ? 'icon-sapphire-active' : 'icon-inactive'">
+                <i [class]="perm.iconClass"></i>
+              </div>
+              <div class="mod-meta">
+                <h6 class="mod-title mb-1">{{ perm.moduleName }}</h6>
+                <span class="mod-path-badge">{{ perm.routePath }}</span>
+              </div>
+            </div>
+
+            <div class="d-flex align-items-center gap-2">
+              <span class="status-indicator-tag" [class.tag-allowed]="perm.isAllowed">
+                {{ perm.isAllowed ? 'ALLOWED' : 'DENIED' }}
+              </span>
+              <label class="switch-toggle" (click)="$event.stopPropagation()">
+                <input type="checkbox" [checked]="perm.isAllowed" (change)="togglePermission(perm)" />
+                <span class="slider-round"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Super Admin Command Hub & Masters (6) -->
+      <div class="module-section-box mb-4">
+        <div class="section-title-bar mb-3">
+          <h5 class="section-heading-txt text-gold">
+            <i class="fa-solid fa-crown me-2"></i> 3. Super Admin Master Control Hub & Fleet
+          </h5>
+          <p class="text-muted small mb-0">High-privilege system masters, user directory, roles, fleet, and reviews.</p>
+        </div>
+
+        <div class="modules-cards-grid">
+          <div 
+            *ngFor="let perm of superAdminModules" 
+            class="module-card glass-card"
+            [class.module-card-active]="perm.isAllowed"
+            (click)="togglePermission(perm)"
+          >
+            <div class="d-flex align-items-center gap-3">
+              <div class="mod-icon-box" [ngClass]="perm.isAllowed ? 'icon-gold-active' : 'icon-inactive'">
+                <i [class]="perm.iconClass"></i>
+              </div>
+              <div class="mod-meta">
+                <h6 class="mod-title mb-1">{{ perm.moduleName }}</h6>
+                <span class="mod-path-badge">{{ perm.routePath }}</span>
+              </div>
+            </div>
+
+            <div class="d-flex align-items-center gap-2">
+              <span class="status-indicator-tag" [class.tag-allowed]="perm.isAllowed">
+                {{ perm.isAllowed ? 'ALLOWED' : 'DENIED' }}
+              </span>
+              <label class="switch-toggle" (click)="$event.stopPropagation()">
+                <input type="checkbox" [checked]="perm.isAllowed" (change)="togglePermission(perm)" />
+                <span class="slider-round"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

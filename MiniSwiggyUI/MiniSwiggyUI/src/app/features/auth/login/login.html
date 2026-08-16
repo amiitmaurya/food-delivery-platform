@@ -1,0 +1,57 @@
+<div class="auth-page-wrapper">
+  <div class="auth-glass-card glass-card">
+    <div class="auth-header">
+      <div class="brand-logo">
+        <i class="fa-solid fa-utensils logo-icon"></i>
+        <span class="brand-name">Mini<span>Swiggy</span></span>
+      </div>
+      <h2>Welcome Back!</h2>
+      <p>Log in to order delicious food or manage your restaurant</p>
+    </div>
+
+    <form (ngSubmit)="login()" class="auth-form">
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <div class="input-with-icon">
+          <i class="fa-solid fa-envelope"></i>
+          <input 
+            type="email" 
+            [(ngModel)]="loginModel.email" 
+            name="email"
+            class="form-control" 
+            placeholder="name@example.com" 
+            required
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <div class="input-with-icon">
+          <i class="fa-solid fa-lock"></i>
+          <input 
+            [type]="showPassword ? 'text' : 'password'" 
+            [(ngModel)]="loginModel.password" 
+            name="password"
+            class="form-control" 
+            placeholder="••••••••" 
+            required
+          />
+          <button type="button" class="eye-btn" (click)="togglePassword()">
+            <i class="fa-solid" [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+          </button>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100 mt-3" [disabled]="isSubmitting">
+        <span *ngIf="!isSubmitting">LOG IN <i class="fa-solid fa-right-to-bracket ms-1"></i></span>
+        <span *ngIf="isSubmitting"><i class="fa-solid fa-circle-notch fa-spin me-2"></i> Logging in...</span>
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      <span>Don't have an account?</span>
+      <a routerLink="/register" class="auth-link">Create Account</a>
+    </div>
+  </div>
+</div>

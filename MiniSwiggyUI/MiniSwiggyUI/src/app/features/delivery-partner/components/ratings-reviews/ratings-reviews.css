@@ -1,0 +1,197 @@
+/* ==========================================================
+   MINISWIGGY - GLASSMORPHISM RATINGS & REVIEWS
+   ========================================================== */
+
+.ratings-reviews-container {
+  padding: 1.5rem 0.5rem 5rem 0.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header-section h2 {
+  font-size: 1.85rem;
+  font-weight: 900;
+  color: var(--text-main);
+  margin: 0 0 0.45rem;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  letter-spacing: -0.03em;
+}
+
+.header-section p {
+  color: var(--text-muted);
+  margin: 0 0 1.75rem;
+  font-size: 0.95rem;
+}
+
+.rating-overview-card {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.92) 100%);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  color: white;
+  padding: 2.25rem 2.5rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2.5rem;
+  box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.35);
+  position: relative;
+  overflow: hidden;
+}
+
+.rating-overview-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--primary-gradient);
+}
+
+.score-box {
+  text-align: center;
+}
+
+.big-score {
+  font-size: 3.8rem;
+  font-weight: 900;
+  margin: 0;
+  color: #f59e0b;
+  letter-spacing: -0.03em;
+  filter: drop-shadow(0 4px 10px rgba(245, 158, 11, 0.4));
+}
+
+.stars {
+  color: #f59e0b;
+  font-size: 1.35rem;
+  margin: 0.35rem 0;
+}
+
+.rating-count {
+  margin: 0;
+  color: #94a3b8;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.badges-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.badge-tag {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 0.6rem 1.25rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.88rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  transition: var(--transition-fast);
+}
+
+.badge-tag:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateX(4px);
+}
+
+.reviews-list-section h3 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 1.25rem;
+}
+
+.reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.75rem;
+}
+
+.review-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  padding: 1.5rem;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-glass);
+  border: 1px solid var(--border-glass);
+  transition: var(--transition-normal);
+}
+
+.review-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-glass-hover);
+  border-color: rgba(255, 82, 0, 0.25);
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.95rem;
+}
+
+.user-name {
+  display: block;
+  font-weight: 800;
+  color: var(--text-main);
+  font-size: 1.05rem;
+}
+
+.order-ref {
+  font-size: 0.8rem;
+  color: var(--text-light);
+  font-weight: 600;
+}
+
+.star-pill {
+  background: #fef3c7;
+  color: #d97706;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-pill);
+  font-weight: 800;
+  font-size: 0.82rem;
+  border: 1px solid #fde68a;
+  box-shadow: 0 2px 6px rgba(245, 158, 11, 0.15);
+}
+
+.review-text {
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+  margin: 0 0 0.95rem;
+  font-style: italic;
+  line-height: 1.5;
+}
+
+.time-stamp {
+  font-size: 0.78rem;
+  color: var(--text-light);
+  font-weight: 600;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .rating-overview-card {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1.75rem;
+    padding: 1.75rem;
+  }
+
+  .badges-box {
+    align-items: center;
+  }
+
+  .reviews-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,50 @@
+<app-toast></app-toast>
+
+<!-- Full Main Layout for App Pages -->
+<div class="app-layout" *ngIf="router.url !== '/register' && router.url !== '/login'">
+  <app-top-navbar></app-top-navbar>
+
+  <div class="app-body">
+    <app-sidebar></app-sidebar>
+    <main class="main-content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+
+  <app-footer></app-footer>
+</div>
+
+<!-- Standalone Auth Pages -->
+<div *ngIf="router.url === '/register' || router.url === '/login'" class="auth-wrapper">
+  <router-outlet></router-outlet>
+</div>
+
+<!-- Global Session Timeout Popup Modal -->
+<div *ngIf="sessionTimeoutService.isSessionExpired$ | async" class="session-modal-backdrop">
+  <div class="session-modal-card">
+    <div class="session-modal-icon-wrapper">
+      <div class="session-icon-circle">
+        <i class="fa-solid fa-clock-rotate-left"></i>
+      </div>
+    </div>
+
+    <div class="session-modal-content text-center">
+      <h3 class="session-title">Session Expired</h3>
+      <p class="session-subtitle">
+        Your login session has expired due to inactivity or token timeout.
+        <br />
+        You have been automatically and safely logged out.
+      </p>
+      <div class="session-alert-note">
+        <i class="fa-solid fa-shield-halved me-1"></i>
+        Please click <strong>Okay</strong> to return to the login screen.
+      </div>
+    </div>
+
+    <div class="session-modal-actions text-center">
+      <button type="button" class="btn btn-primary session-okay-btn" (click)="onSessionExpiredOkay()">
+        <i class="fa-solid fa-check me-2"></i> Okay
+      </button>
+    </div>
+  </div>
+</div>

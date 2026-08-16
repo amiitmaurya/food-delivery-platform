@@ -1,0 +1,71 @@
+<Project Sdk="Microsoft.VisualStudio.JavaScript.Sdk/1.0.5581896">
+  <PropertyGroup>
+    <StartupCommand>npm start</StartupCommand>
+    <JavaScriptTestFramework>Jasmine</JavaScriptTestFramework>
+    <!-- Allows the build (or compile) script located on package.json to run on Build -->
+    <ShouldRunBuildScript>false</ShouldRunBuildScript>
+    <!-- Folder where production build objects will be placed -->
+    <BuildOutputFolder>$(MSBuildProjectDirectory)\dist\MiniSwiggyUI\browser\</BuildOutputFolder>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="src\app\core\constants\**" />
+    <None Remove="src\app\core\guards\**" />
+    <None Remove="src\app\core\helpers\**" />
+    <None Remove="src\app\features\auth\forgot-password\**" />
+    <None Remove="src\app\features\category\**" />
+    <None Remove="src\app\features\error\**" />
+    <None Remove="src\app\features\food-item\food-details\**" />
+    <None Remove="src\app\features\food-item\food-list\**" />
+    <None Remove="src\app\features\home\**" />
+    <None Remove="src\app\features\payment\**" />
+    <None Remove="src\app\features\reviews\**" />
+    <None Remove="src\app\features\users\**" />
+    <None Remove="src\app\features\wishlist\**" />
+    <TypeScriptConfiguration Remove="src\app\core\constants\**" />
+    <TypeScriptConfiguration Remove="src\app\core\guards\**" />
+    <TypeScriptConfiguration Remove="src\app\core\helpers\**" />
+    <TypeScriptConfiguration Remove="src\app\features\auth\forgot-password\**" />
+    <TypeScriptConfiguration Remove="src\app\features\category\**" />
+    <TypeScriptConfiguration Remove="src\app\features\error\**" />
+    <TypeScriptConfiguration Remove="src\app\features\food-item\food-details\**" />
+    <TypeScriptConfiguration Remove="src\app\features\food-item\food-list\**" />
+    <TypeScriptConfiguration Remove="src\app\features\home\**" />
+    <TypeScriptConfiguration Remove="src\app\features\payment\**" />
+    <TypeScriptConfiguration Remove="src\app\features\reviews\**" />
+    <TypeScriptConfiguration Remove="src\app\features\users\**" />
+    <TypeScriptConfiguration Remove="src\app\features\wishlist\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="src\app\core\interceptors\" />
+    <Folder Include="src\app\core\layouts\admin-layout\" />
+    <Folder Include="src\app\core\layouts\customer-layout\" />
+    <Folder Include="src\app\core\models\" />
+    <Folder Include="src\app\core\services\" />
+    <Folder Include="src\app\features\admin\orders\" />
+    <Folder Include="src\app\features\admin\reports\" />
+    <Folder Include="src\app\features\food-item\" />
+    <Folder Include="src\app\features\order\" />
+    <Folder Include="src\app\features\profile\" />
+    <Folder Include="src\app\shared\components\loader\" />
+    <Folder Include="src\app\shared\components\category-card\" />
+    <Folder Include="src\app\shared\components\food-card\" />
+    <Folder Include="src\app\shared\components\not-found\" />
+    <Folder Include="src\app\shared\components\search-bar\" />
+    <Folder Include="src\app\shared\directives\" />
+    <Folder Include="src\app\shared\enums\" />
+    <Folder Include="src\app\shared\interfaces\" />
+    <Folder Include="src\app\shared\models\" />
+    <Folder Include="src\app\shared\guards\" />
+    <Folder Include="src\app\shared\interceptors\" />
+    <Folder Include="src\app\shared\services\" />
+    <Folder Include="src\app\shared\pipes\" />
+    <Folder Include="src\app\shared\validators\" />
+    <Folder Include="src\assets\animations\" />
+    <Folder Include="src\assets\banners\" />
+    <Folder Include="src\assets\fonts\" />
+    <Folder Include="src\assets\icons\" />
+    <Folder Include="src\assets\images\" />
+    <Folder Include="src\assets\logo\" />
+    <Folder Include="src\assets\scss\" />
+  </ItemGroup>
+</Project>

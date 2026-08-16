@@ -1,0 +1,123 @@
+<div class="role-master-container">
+  <!-- Page Header -->
+  <div class="page-header-card glass-card mb-4">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+      <div>
+        <div class="header-pill-badge">
+          <i class="fa-solid fa-shield-halved text-primary me-1"></i> Access Control & Privileges
+        </div>
+        <h2 class="page-title">Role Master Management</h2>
+        <p class="page-subtitle">Configure system user roles, access hierarchy, and platform privilege assignments</p>
+      </div>
+      <button class="btn btn-primary btn-add-glow" (click)="openCreateModal()">
+        <i class="fa-solid fa-plus-circle me-2"></i> Add New Role
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="glass-card loading-box text-center my-4">
+    <i class="fa-solid fa-circle-notch fa-spin fa-2x text-primary mb-3"></i>
+    <h5>Loading access roles...</h5>
+  </div>
+
+  <!-- Roles Grid -->
+  <div *ngIf="!isLoading" class="roles-card-grid">
+    <div *ngFor="let role of roles" class="glass-card role-card-item">
+      <!-- Card Top Bar -->
+      <div class="role-card-top">
+        <div class="role-icon-wrapper" [class.icon-superadmin]="role.name.toLowerCase() === 'superadmin'">
+          <i [ngClass]="getRoleIcon(role.name)"></i>
+        </div>
+        <span class="role-badge-chip" [class.chip-system]="isBuiltInRole(role.name)">
+          <i class="fa-solid" [ngClass]="isBuiltInRole(role.name) ? 'fa-lock me-1' : 'fa-sliders me-1'"></i>
+          {{ isBuiltInRole(role.name) ? 'Core System Role' : 'Custom Role' }}
+        </span>
+      </div>
+
+      <!-- Card Main Info -->
+      <div class="role-card-body">
+        <h3 class="role-name">{{ role.name }}</h3>
+        <p class="role-desc-text">{{ role.description || 'System access level for ' + role.name + ' user accounts.' }}</p>
+
+        <div class="role-meta-pill">
+          <div class="users-count-tag">
+            <i class="fa-solid fa-users text-primary me-2"></i>
+            <span><strong>{{ role.usersCount || 0 }}</strong> Assigned Users</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card Action Footer -->
+      <div class="role-card-actions">
+        <button class="btn btn-edit-role" (click)="openEditModal(role)">
+          <i class="fa-solid fa-pen-to-square me-1"></i> Edit Mode
+        </button>
+        <button 
+          class="btn btn-toggle-role" 
+          [ngClass]="role.isActive !== false ? 'btn-role-active' : 'btn-role-inactive'" 
+          (click)="toggleStatus(role)"
+          [title]="role.isActive !== false ? 'Deactivate Role' : 'Activate Role'"
+        >
+          <i class="fa-solid" [ngClass]="role.isActive !== false ? 'fa-toggle-on' : 'fa-toggle-off'"></i>
+          {{ role.isActive !== false ? 'Active' : 'Inactive' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADD / EDIT ROLE MODAL -->
+  <div *ngIf="showModal" class="modal-overlay-backdrop">
+    <div class="modal-box-glass">
+      <div class="modal-box-header">
+        <div class="d-flex align-items-center gap-3">
+          <div class="modal-box-icon" [class.edit-icon]="isEditing">
+            <i class="fa-solid" [ngClass]="isEditing ? 'fa-pen' : 'fa-plus'"></i>
+          </div>
+          <div>
+            <h4>{{ isEditing ? 'Edit Role Details' : 'Create New System Role' }}</h4>
+            <span class="text-muted small">Configure role title, description, and permissions</span>
+          </div>
+        </div>
+        <button class="modal-close-icon-btn" (click)="showModal = false"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="modal-box-body">
+        <div class="form-group mb-3">
+          <label class="form-label fw-bold">Role Name *</label>
+          <div class="input-icon-field">
+            <i class="fa-solid fa-tag"></i>
+            <input 
+              type="text" 
+              [(ngModel)]="formData.name" 
+              class="form-control" 
+              placeholder="e.g. AreaManager" 
+              [disabled]="isEditing && isBuiltInRole(formData.name)"
+              required
+            />
+          </div>
+          <small *ngIf="isEditing && isBuiltInRole(formData.name)" class="text-muted">
+            <i class="fa-solid fa-circle-info me-1"></i> Core built-in role name cannot be renamed.
+          </small>
+        </div>
+
+        <div class="form-group mb-2">
+          <label class="form-label fw-bold">Description</label>
+          <textarea 
+            [(ngModel)]="formData.description" 
+            class="form-control" 
+            rows="3" 
+            placeholder="Describe role responsibilities and privileges..."
+          ></textarea>
+        </div>
+      </div>
+
+      <div class="modal-box-footer">
+        <button class="btn btn-secondary" (click)="showModal = false">Cancel</button>
+        <button class="btn btn-primary" (click)="saveRole()">
+          <i class="fa-solid fa-check me-1"></i> {{ isEditing ? 'Save Changes' : 'Create Role' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

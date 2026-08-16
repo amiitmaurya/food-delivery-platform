@@ -1,0 +1,166 @@
+<div class="address-list-page container">
+  <div class="page-header">
+    <div>
+      <h2><i class="fa-solid fa-location-dot me-2 text-primary"></i> Saved Delivery Addresses</h2>
+      <p>Manage your home, office, and preferred delivery locations</p>
+    </div>
+    <button class="btn btn-primary" (click)="openCreateModal()">
+      <i class="fa-solid fa-plus me-1"></i> Add New Address
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="p-4 text-center">
+    <i class="fa-solid fa-spinner fa-spin fa-2x text-primary"></i>
+
+    <p class="mt-2 text-muted">Loading delivery addresses...</p>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && addresses.length === 0" class="glass-card p-5 text-center my-4">
+    <i class="fa-solid fa-map-location-dot fa-3x text-muted mb-3"></i>
+    <h3>No Addresses Saved Yet</h3>
+    <p class="text-muted">Add a delivery address to speed up your food orders.</p>
+  </div>
+
+  <!-- Address Cards Grid -->
+  <div *ngIf="!isLoading && addresses.length > 0" class="address-grid">
+    <div *ngFor="let addr of addresses" class="glass-card address-card" [class.default-card]="addr.isDefault">
+      <div class="card-header">
+        <div class="d-flex align-items-center gap-2">
+          <i class="fa-solid fa-house text-primary fs-5"></i>
+          <span class="addr-title">Home Address</span>
+        </div>
+        <span *ngIf="addr.isDefault" class="badge badge-success">DEFAULT</span>
+      </div>
+
+      <div class="card-body">
+        <p class="address-text">{{ addr.addressLine }}</p>
+        <p class="city-text">{{ addr.city }}, {{ addr.state }} - {{ addr.postalCode }}</p>
+      </div>
+
+      <div class="card-footer">
+        <button *ngIf="!addr.isDefault" class="btn btn-outline-secondary btn-sm" (click)="setDefault(addr.id)">
+          Set Default
+        </button>
+        <button class="btn btn-secondary btn-sm ms-auto me-2" (click)="openEditModal(addr)">
+          <i class="fa-solid fa-pen"></i> Edit
+        </button>
+        <button class="btn btn-danger btn-sm" (click)="deleteAddress(addr.id)">
+          <i class="fa-solid fa-trash"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add / Edit Modal -->
+  <div *ngIf="showModal" class="modal-backdrop">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>{{ editingId === 0 ? 'Add New Delivery Address' : 'Edit Delivery Address' }}</h3>
+        <button class="modal-close-btn" (click)="showModal = false"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <!-- Address Type Selector: HOME / OFFICE / OTHER -->
+      <div class="form-group mb-3">
+        <label class="form-label fw-bold">Address Type / Label *</label>
+        <div class="type-selector-pills">
+          <button 
+            type="button" 
+            class="type-pill-btn" 
+            [class.active]="formData.addressType === 'HOME' || !formData.addressType" 
+            (click)="formData.addressType = 'HOME'"
+          >
+            <i class="fa-solid fa-house me-1"></i> Home
+          </button>
+          <button 
+            type="button" 
+            class="type-pill-btn" 
+            [class.active]="formData.addressType === 'OFFICE'" 
+            (click)="formData.addressType = 'OFFICE'"
+          >
+            <i class="fa-solid fa-briefcase me-1"></i> Office / Work
+          </button>
+          <button 
+            type="button" 
+            class="type-pill-btn" 
+            [class.active]="formData.addressType === 'OTHER'" 
+            (click)="formData.addressType = 'OTHER'"
+          >
+            <i class="fa-solid fa-location-dot me-1"></i> Other
+          </button>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group col">
+          <label class="form-label">Full Name *</label>
+          <input type="text" [(ngModel)]="formData.fullName" class="form-control" placeholder="e.g. Amit Maurya" />
+        </div>
+
+        <div class="form-group col">
+          <label class="form-label">Phone Number *</label>
+          <div class="input-phone-container">
+            <span class="input-phone-prefix">+91</span>
+            <input 
+              type="tel" 
+              [(ngModel)]="formData.phoneNumber" 
+              class="form-control" 
+              placeholder="9876543210" 
+              maxlength="10"
+              inputmode="numeric"
+              (keypress)="onlyNumbers($event)"
+              (input)="onPhoneInput($event)"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group col">
+          <label class="form-label">House / Flat No *</label>
+          <input type="text" [(ngModel)]="formData.houseNo" class="form-control" placeholder="e.g. Flat 402, Block B" />
+        </div>
+
+        <div class="form-group col">
+          <label class="form-label">Street / Area *</label>
+          <input type="text" [(ngModel)]="formData.street" class="form-control" placeholder="e.g. Green Valley Society" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Landmark</label>
+        <input type="text" [(ngModel)]="formData.landmark" class="form-control" placeholder="e.g. Near City Bank ATM" />
+      </div>
+
+      <div class="form-row">
+        <div class="form-group col">
+          <label class="form-label">City *</label>
+          <input type="text" [(ngModel)]="formData.city" class="form-control" placeholder="e.g. New Delhi" />
+        </div>
+
+        <div class="form-group col">
+          <label class="form-label">State</label>
+          <input type="text" [(ngModel)]="formData.state" class="form-control" placeholder="e.g. Delhi" />
+        </div>
+
+        <div class="form-group col">
+          <label class="form-label">Pincode</label>
+          <input type="text" [(ngModel)]="formData.pincode" class="form-control" placeholder="e.g. 110001" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="checkbox-label">
+          <input type="checkbox" [(ngModel)]="formData.isDefault" />
+          <span>Set as Default Delivery Address?</span>
+        </label>
+      </div>
+
+      <div class="modal-footer mt-3">
+        <button class="btn btn-secondary me-2" (click)="showModal = false">Cancel</button>
+        <button class="btn btn-primary" (click)="saveAddress()">Save Address</button>
+      </div>
+    </div>
+  </div>
+</div>

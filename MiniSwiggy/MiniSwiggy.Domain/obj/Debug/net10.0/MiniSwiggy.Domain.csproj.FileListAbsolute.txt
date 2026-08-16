@@ -1,0 +1,35 @@
+C:\Food Website\MiniSwiggy\MiniSwiggy.Domain\bin\Debug\net10.0\MiniSwiggy.Domain.deps.json
+C:\Food Website\MiniSwiggy\MiniSwiggy.Domain\bin\Debug\net10.0\MiniSwiggy.Domain.dll
+C:\Food Website\MiniSwiggy\MiniSwiggy.Domain\bin\Debug\net10.0\MiniSwiggy.Domain.pdb
+C:\Food Website\MiniSwiggy\MiniSwiggy.Domain\obj\Debug\net10.0\MiniSwiggy.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Food Website\MiniSwiggy\MiniSwiggy.Domain\obj\Debug\net10.0\MiniSwiggy.Domain.AssemblyInfoInputs.cache
+C:\Food Website\MiniSwiggy\MiniSwiggy.Domain\obj\Debug\net10.0\MiniSwiggy.Domain.AssemblyInfo.cs
+C:\Food Website\MiniSwiggy\MiniSwiggy.Domain\obj\Debug\net10.0\MiniSwiggy.Domain.csproj.CoreCompileInputs.cache
+C:\Food Website\MiniSwiggy\MiniSwiggy.Domain\obj\Debug\net10.0\MiniSwiggy.Domain.dll
+C:\Food Website\MiniSwiggy\MiniSwiggy.Domain\obj\Debug\net10.0\refint\MiniSwiggy.Domain.dll
+C:\Food Website\MiniSwiggy\MiniSwiggy.Domain\obj\Debug\net10.0\MiniSwiggy.Domain.pdb
+C:\Food Website\MiniSwiggy\MiniSwiggy.Domain\obj\Debug\net10.0\ref\MiniSwiggy.Domain.dll
+D:\Food Website\MiniSwiggy\MiniSwiggy.Domain\bin\Debug\net10.0\MiniSwiggy.Domain.deps.json
+D:\Food Website\MiniSwiggy\MiniSwiggy.Domain\bin\Debug\net10.0\MiniSwiggy.Domain.dll
+D:\Food Website\MiniSwiggy\MiniSwiggy.Domain\bin\Debug\net10.0\MiniSwiggy.Domain.pdb
+D:\Food Website\MiniSwiggy\MiniSwiggy.Domain\obj\Debug\net10.0\MiniSwiggy.Domain.csproj.AssemblyReference.cache
+D:\Food Website\MiniSwiggy\MiniSwiggy.Domain\obj\Debug\net10.0\MiniSwiggy.Domain.GeneratedMSBuildEditorConfig.editorconfig
+D:\Food Website\MiniSwiggy\MiniSwiggy.Domain\obj\Debug\net10.0\MiniSwiggy.Domain.AssemblyInfoInputs.cache
+D:\Food Website\MiniSwiggy\MiniSwiggy.Domain\obj\Debug\net10.0\MiniSwiggy.Domain.AssemblyInfo.cs
+D:\Food Website\MiniSwiggy\MiniSwiggy.Domain\obj\Debug\net10.0\MiniSwiggy.Domain.csproj.CoreCompileInputs.cache
+D:\Food Website\MiniSwiggy\MiniSwiggy.Domain\obj\Debug\net10.0\MiniSwiggy.Domain.dll
+D:\Food Website\MiniSwiggy\MiniSwiggy.Domain\obj\Debug\net10.0\refint\MiniSwiggy.Domain.dll
+D:\Food Website\MiniSwiggy\MiniSwiggy.Domain\obj\Debug\net10.0\MiniSwiggy.Domain.pdb
+D:\Food Website\MiniSwiggy\MiniSwiggy.Domain\obj\Debug\net10.0\ref\MiniSwiggy.Domain.dll
+D:\food-delivery-platform\MiniSwiggy\MiniSwiggy.Domain\bin\Debug\net10.0\MiniSwiggy.Domain.deps.json
+D:\food-delivery-platform\MiniSwiggy\MiniSwiggy.Domain\bin\Debug\net10.0\MiniSwiggy.Domain.dll
+D:\food-delivery-platform\MiniSwiggy\MiniSwiggy.Domain\bin\Debug\net10.0\MiniSwiggy.Domain.pdb
+D:\food-delivery-platform\MiniSwiggy\MiniSwiggy.Domain\obj\Debug\net10.0\MiniSwiggy.Domain.csproj.AssemblyReference.cache
+D:\food-delivery-platform\MiniSwiggy\MiniSwiggy.Domain\obj\Debug\net10.0\MiniSwiggy.Domain.GeneratedMSBuildEditorConfig.editorconfig
+D:\food-delivery-platform\MiniSwiggy\MiniSwiggy.Domain\obj\Debug\net10.0\MiniSwiggy.Domain.AssemblyInfoInputs.cache
+D:\food-delivery-platform\MiniSwiggy\MiniSwiggy.Domain\obj\Debug\net10.0\MiniSwiggy.Domain.AssemblyInfo.cs
+D:\food-delivery-platform\MiniSwiggy\MiniSwiggy.Domain\obj\Debug\net10.0\MiniSwiggy.Domain.csproj.CoreCompileInputs.cache
+D:\food-delivery-platform\MiniSwiggy\MiniSwiggy.Domain\obj\Debug\net10.0\MiniSwiggy.Domain.dll
+D:\food-delivery-platform\MiniSwiggy\MiniSwiggy.Domain\obj\Debug\net10.0\refint\MiniSwiggy.Domain.dll
+D:\food-delivery-platform\MiniSwiggy\MiniSwiggy.Domain\obj\Debug\net10.0\MiniSwiggy.Domain.pdb
+D:\food-delivery-platform\MiniSwiggy\MiniSwiggy.Domain\obj\Debug\net10.0\ref\MiniSwiggy.Domain.dll

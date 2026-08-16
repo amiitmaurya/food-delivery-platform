@@ -1,0 +1,2 @@
+D:\Food Website\MiniSwiggyUI\MiniSwiggyUI\obj\Debug\MiniSwiggyUI.esproj.CoreCompileInputs.cache
+D:\food-delivery-platform\MiniSwiggyUI\MiniSwiggyUI\obj\Debug\MiniSwiggyUI.esproj.CoreCompileInputs.cache

@@ -1,0 +1,188 @@
+<!-- Mobile Drawer Backdrop Overlay -->
+<div 
+  *ngIf="sidebarService.isOpen$ | async" 
+  class="sidebar-backdrop" 
+  (click)="closeSidebar()"
+></div>
+
+<aside class="sidebar" [class.open]="sidebarService.isOpen$ | async">
+  <div class="sidebar-mobile-header">
+    <span class="mobile-brand-title"><i class="fa-solid fa-bars-staggered text-primary me-2"></i> Navigation Menu</span>
+    <button class="close-sidebar-btn" (click)="closeSidebar()" title="Close Menu"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+
+  <!-- Customer Navigation Section -->
+  <div *ngIf="!authService.isDeliveryPartner()" class="sidebar-section">
+    <span class="section-title">Explore Food</span>
+    <ul class="nav-list">
+      <li *ngIf="permissionService.canAccess('restaurants')">
+        <a routerLink="/restaurant" routerLinkActive="active">
+          <i class="fa-solid fa-store"></i>
+          <span>Restaurants</span>
+        </a>
+      </li>
+      <li *ngIf="permissionService.canAccess('cart')">
+        <a routerLink="/cart" routerLinkActive="active">
+          <i class="fa-solid fa-basket-shopping"></i>
+          <span>My Cart</span>
+        </a>
+      </li>
+      <li *ngIf="permissionService.canAccess('orders')">
+        <a routerLink="/my-orders" routerLinkActive="active">
+          <i class="fa-solid fa-clock-rotate-left"></i>
+          <span>My Orders</span>
+        </a>
+      </li>
+      <li *ngIf="permissionService.canAccess('wishlist')">
+        <a routerLink="/wishlist" routerLinkActive="active">
+          <i class="fa-solid fa-heart"></i>
+          <span>Wishlist & Favorites</span>
+        </a>
+      </li>
+      <li *ngIf="permissionService.canAccess('addresses')">
+        <a routerLink="/addresses" routerLinkActive="active">
+          <i class="fa-solid fa-location-dot"></i>
+          <span>Saved Addresses</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/payment-history" routerLinkActive="active">
+          <i class="fa-solid fa-receipt"></i>
+          <span>Payment History</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Super Admin & All Module Masters Section (Visible for Admin & Super Admin) -->
+  <div *ngIf="authService.isAdmin() && !authService.isDeliveryPartner()" class="sidebar-section superadmin-section">
+    <span class="section-title superadmin-title">
+      <i class="fa-solid fa-crown text-warning me-1"></i> Master Control Hub
+    </span>
+    <ul class="nav-list">
+      <li *ngIf="permissionService.canAccess('superadmin_dashboard')">
+        <a routerLink="/superadmin/dashboard" routerLinkActive="active">
+          <i class="fa-solid fa-gauge-high"></i>
+          <span>Master Dashboard</span>
+        </a>
+      </li>
+      <li *ngIf="permissionService.canAccess('user_master')">
+        <a routerLink="/superadmin/users" routerLinkActive="active">
+          <i class="fa-solid fa-users-gear"></i>
+          <span>User Master</span>
+        </a>
+      </li>
+      <li *ngIf="permissionService.canAccess('role_master')">
+        <a routerLink="/superadmin/roles" routerLinkActive="active">
+          <i class="fa-solid fa-shield-halved"></i>
+          <span>Role Master</span>
+        </a>
+      </li>
+      <li *ngIf="permissionService.canAccess('permission_master')">
+        <a routerLink="/superadmin/permissions" routerLinkActive="active">
+          <i class="fa-solid fa-key"></i>
+          <span>Module Access Master</span>
+        </a>
+      </li>
+      <li *ngIf="permissionService.canAccess('restaurant_master')">
+        <a routerLink="/admin/restaurants" routerLinkActive="active">
+          <i class="fa-solid fa-store"></i>
+          <span>Restaurant Master</span>
+        </a>
+      </li>
+      <li *ngIf="permissionService.canAccess('category_master')">
+        <a routerLink="/categories" routerLinkActive="active">
+          <i class="fa-solid fa-layer-group"></i>
+          <span>Category Master</span>
+        </a>
+      </li>
+      <li *ngIf="permissionService.canAccess('food_master')">
+        <a routerLink="/food-item" routerLinkActive="active">
+          <i class="fa-solid fa-burger"></i>
+          <span>Food Item Master</span>
+        </a>
+      </li>
+      <!--<li *ngIf="permissionService.canAccess('order_master')">
+        <a routerLink="/admin/orders" routerLinkActive="active">
+          <i class="fa-solid fa-boxes-packing"></i>
+          <span>Order Master</span>
+        </a>
+      </li>-->
+      <li>
+        <a routerLink="/admin/payments" routerLinkActive="active">
+          <i class="fa-solid fa-receipt"></i>
+          <span>Payment Transactions</span>
+        </a>
+      </li>
+      <li *ngIf="permissionService.canAccess('coupon_master')">
+        <a routerLink="/coupons" routerLinkActive="active">
+          <i class="fa-solid fa-ticket"></i>
+          <span>Coupon Master</span>
+        </a>
+      </li>
+      <li *ngIf="permissionService.canAccess('fleet_master')">
+        <a routerLink="/superadmin/delivery-partners" routerLinkActive="active">
+          <i class="fa-solid fa-person-biking"></i>
+          <span>Delivery Fleet Master</span>
+        </a>
+      </li>
+      <li *ngIf="permissionService.canAccess('review_master')">
+        <a routerLink="/superadmin/reviews" routerLinkActive="active">
+          <i class="fa-solid fa-comments"></i>
+          <span>Review Master</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Delivery Partner Dedicated Navigation Section -->
+  <div *ngIf="authService.isDeliveryPartner()" class="sidebar-section delivery-section">
+    <span class="section-title delivery-title">
+      <i class="fa-solid fa-person-biking"></i> Delivery Partner Portal
+    </span>
+    <ul class="nav-list">
+      <li>
+        <a routerLink="/delivery-partner/dashboard" routerLinkActive="active">
+          <i class="fa-solid fa-chart-line"></i>
+          <span>Dashboard</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/delivery-partner/assigned-orders" routerLinkActive="active">
+          <i class="fa-solid fa-clipboard-list"></i>
+          <span>Assigned Orders</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/delivery-partner/active-delivery" routerLinkActive="active">
+          <i class="fa-solid fa-route"></i>
+          <span>Active Delivery</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/delivery-partner/delivery-history" routerLinkActive="active">
+          <i class="fa-solid fa-clock-rotate-left"></i>
+          <span>Delivery History</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/delivery-partner/earnings" routerLinkActive="active">
+          <i class="fa-solid fa-wallet"></i>
+          <span>Earnings</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/delivery-partner/ratings-reviews" routerLinkActive="active">
+          <i class="fa-solid fa-star"></i>
+          <span>Ratings & Reviews</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/delivery-partner/profile" routerLinkActive="active">
+          <i class="fa-solid fa-user-gear"></i>
+          <span>Profile</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</aside>

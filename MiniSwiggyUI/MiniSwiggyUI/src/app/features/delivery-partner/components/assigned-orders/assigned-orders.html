@@ -1,0 +1,119 @@
+<div class="assigned-orders-container">
+  <div class="header-section">
+    <h2><i class="fa-solid fa-clipboard-list"></i> Assigned Orders</h2>
+    <p>Review and accept newly assigned delivery tasks.</p>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-spinner">
+    <i class="fa-solid fa-spinner fa-spin"></i> Loading assigned orders...
+  </div>
+
+  <div *ngIf="!isLoading && assignedOrders.length === 0" class="empty-state">
+    <i class="fa-solid fa-inbox empty-icon"></i>
+    <h3>No New Orders Assigned</h3>
+    <p>You have no pending order assignments at the moment. Keep your status Online!</p>
+  </div>
+
+  <div *ngIf="!isLoading && assignedOrders.length > 0" class="orders-grid">
+    <div *ngFor="let order of assignedOrders" class="order-card">
+      <div class="card-header">
+        <div>
+          <span class="order-number">Order #{{ order.orderNumber }}</span>
+          <span class="order-date"><i class="fa-regular fa-clock"></i> {{ order.orderDate | date:'mediumTime' }}</span>
+        </div>
+        <span class="status-chip" [class.accepted]="isOrderAccepted(order)" [class.rejected]="isOrderRejected(order)">
+          {{ isOrderAccepted(order) ? 'Accepted' : (isOrderRejected(order) ? 'Rejected' : order.status) }}
+        </span>
+      </div>
+
+      <div class="card-body">
+        <div class="location-item">
+          <div class="dot pickup"></div>
+          <div>
+            <label>Pickup Location (Restaurant)</label>
+            <h4>{{ order.restaurantName }}</h4>
+            <p>{{ order.restaurantAddress }}</p>
+          </div>
+        </div>
+
+        <div class="location-divider"></div>
+
+        <div class="location-item">
+          <div class="dot drop"></div>
+          <div>
+            <label>Delivery Location (Customer)</label>
+            <h4>{{ order.customerName }}</h4>
+            <p>{{ order.deliveryAddress }}</p>
+          </div>
+        </div>
+
+        <div class="order-summary-row">
+          <span>Items: <strong>{{ order.items.length || 1 }} items</strong></span>
+          <span>Earnings: <strong class="earning">₹40.00</strong></span>
+        </div>
+      </div>
+
+      <div class="card-actions">
+        <button class="btn btn-secondary" (click)="viewDetails(order)">
+          <i class="fa-solid fa-eye"></i> Details
+        </button>
+
+        <button class="btn btn-danger" 
+                [disabled]="isOrderDisabled(order)" 
+                (click)="rejectOrder(order)">
+          <i class="fa-solid" [ngClass]="isOrderRejected(order) ? 'fa-circle-xmark' : 'fa-xmark'"></i> 
+          {{ isOrderRejected(order) ? 'Order Rejected' : 'Reject' }}
+        </button>
+
+        <button class="btn btn-success" 
+                [disabled]="isOrderDisabled(order)" 
+                (click)="acceptOrder(order)">
+          <i class="fa-solid" [ngClass]="isOrderAccepted(order) ? 'fa-circle-check' : 'fa-check'"></i> 
+          {{ isOrderAccepted(order) ? 'Order Accepted' : 'Accept Order' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Order Details Modal -->
+  <div *ngIf="selectedOrder" class="modal-backdrop" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Order Details #{{ selectedOrder.orderNumber }}</h3>
+        <button class="close-btn" (click)="closeModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="info-group">
+          <h5>Restaurant</h5>
+          <p><strong>{{ selectedOrder.restaurantName }}</strong></p>
+          <p>{{ selectedOrder.restaurantAddress }}</p>
+          <p><i class="fa-solid fa-phone"></i> {{ selectedOrder.restaurantPhone }}</p>
+        </div>
+
+        <div class="info-group">
+          <h5>Customer</h5>
+          <p><strong>{{ selectedOrder.customerName }}</strong></p>
+          <p>{{ selectedOrder.deliveryAddress }}</p>
+          <p><i class="fa-solid fa-phone"></i> {{ selectedOrder.customerPhone }}</p>
+        </div>
+
+        <div class="info-group">
+          <h5>Items List</h5>
+          <ul class="items-list">
+            <li *ngFor="let item of selectedOrder.items">
+              <span>{{ item.quantity }}x {{ item.foodItemName }}</span>
+              <span>₹{{ item.price * item.quantity }}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeModal()">Close</button>
+        <button class="btn btn-success" [disabled]="isOrderDisabled(selectedOrder)" (click)="acceptOrder(selectedOrder)">
+          <i class="fa-solid" [ngClass]="isOrderAccepted(selectedOrder) ? 'fa-circle-check' : 'fa-check'"></i>
+          {{ isOrderAccepted(selectedOrder) ? 'Order Accepted' : 'Accept Order' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

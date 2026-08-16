@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "pu3Gwpl3kgY=",
+  "success": true,
+  "projectFilePath": "D:\\food-delivery-platform\\MiniSwiggy\\MiniSwiggy.Application\\MiniSwiggy.Application.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\amitm\\.nuget\\packages\\fluentvalidation\\12.1.1\\fluentvalidation.12.1.1.nupkg.sha512",
+    "C:\\Users\\amitm\\.nuget\\packages\\microsoft.aspnetcore.http.features\\5.0.17\\microsoft.aspnetcore.http.features.5.0.17.nupkg.sha512",
+    "C:\\Users\\amitm\\.nuget\\packages\\microsoft.extensions.primitives\\5.0.1\\microsoft.extensions.primitives.5.0.1.nupkg.sha512"
+  ],
+  "logs": []
+}

@@ -1,0 +1,256 @@
+<div class="payment-history-page container my-4">
+  <!-- Header Section -->
+  <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+    <div>
+      <h1 class="h3 fw-bold mb-1 d-flex align-items-center gap-2">
+        <i class="fa-solid fa-receipt text-primary"></i>
+        <span>{{ isAdminOrSuperAdmin ? 'Platform Payment Transactions' : 'My Payment History' }}</span>
+      </h1>
+      <p class="text-muted small mb-0">
+        {{ isAdminOrSuperAdmin ? 'Monitor, audit, and track all customer transactions across COD and Online payments.' : 'View all your completed, pending, and past payment transactions.' }}
+      </p>
+    </div>
+
+    <div class="d-flex gap-2">
+      <button class="btn btn-secondary btn-sm" (click)="loadPayments()" [disabled]="isLoading" title="Refresh records">
+        <i class="fa-solid fa-arrows-rotate" [class.fa-spin]="isLoading"></i> Refresh
+      </button>
+      <a *ngIf="!isAdminOrSuperAdmin" routerLink="/restaurant" class="btn btn-primary btn-sm">
+        <i class="fa-solid fa-bag-shopping me-1"></i> Order Food
+      </a>
+    </div>
+  </div>
+
+  <!-- Summary KPI Cards -->
+  <div class="row g-3 mb-4">
+    <!-- Card 1: Total Volume -->
+    <div class="col-sm-6 col-lg-3">
+      <div class="glass-card stat-card p-3">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <span class="text-muted small fw-bold text-uppercase">{{ isAdminOrSuperAdmin ? 'Total Platform Volume' : 'Total Amount Paid' }}</span>
+            <h3 class="fw-bold text-dark mt-1 mb-0">₹{{ getTotalAmount() | number:'1.2-2' }}</h3>
+          </div>
+          <div class="stat-icon bg-primary-subtle text-primary">
+            <i class="fa-solid fa-indian-rupee-sign"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2: Successful Transactions -->
+    <div class="col-sm-6 col-lg-3">
+      <div class="glass-card stat-card p-3">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <span class="text-muted small fw-bold text-uppercase">Successful Payments</span>
+            <h3 class="fw-bold text-success mt-1 mb-0">{{ getPaidCount() }}</h3>
+          </div>
+          <div class="stat-icon bg-success-subtle text-success">
+            <i class="fa-solid fa-circle-check"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 3: Instant UPI Volume -->
+    <div class="col-sm-6 col-lg-3">
+      <div class="glass-card stat-card p-3">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <span class="text-muted small fw-bold text-uppercase">Instant UPI Volume</span>
+            <h3 class="fw-bold text-warning mt-1 mb-0">₹{{ getUpiTotal() | number:'1.2-2' }}</h3>
+          </div>
+          <div class="stat-icon bg-warning-subtle text-warning">
+            <i class="fa-solid fa-qrcode"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 4: COD Volume -->
+    <div class="col-sm-6 col-lg-3">
+      <div class="glass-card stat-card p-3">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <span class="text-muted small fw-bold text-uppercase">Cash on Delivery</span>
+            <h3 class="fw-bold text-info mt-1 mb-0">₹{{ getCodTotal() | number:'1.2-2' }}</h3>
+          </div>
+          <div class="stat-icon bg-info-subtle text-info">
+            <i class="fa-solid fa-hand-holding-dollar"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter & Search Controls Bar -->
+  <div class="filter-toolbar-card glass-card mb-4">
+    <div class="toolbar-flex-container">
+      <!-- Search Input -->
+      <div class="toolbar-search-box">
+        <i class="fa-solid fa-magnifying-glass search-leading-icon"></i>
+        <input 
+          type="text" 
+          [(ngModel)]="searchTerm" 
+          (ngModelChange)="onSearchChange()" 
+          class="form-control toolbar-search-input" 
+          [placeholder]="isAdminOrSuperAdmin ? 'Search by Order #, Txn ID, Customer...' : 'Search by Order # or Amount...'" 
+        />
+        <button 
+          *ngIf="searchTerm" 
+          class="search-clear-btn" 
+          (click)="searchTerm = ''; onSearchChange()" 
+          type="button"
+          title="Clear search"
+        >
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Status Filter -->
+      <div class="toolbar-filter-item">
+        <select class="form-select toolbar-select" [(ngModel)]="statusFilter" (change)="onFilterChange()">
+          <option value="ALL">All Payment Status</option>
+          <option value="2">Paid / Success</option>
+          <option value="1">Pending</option>
+          <option value="3">Failed</option>
+          <option value="4">Refunded</option>
+        </select>
+      </div>
+
+      <!-- Method Filter -->
+      <div class="toolbar-filter-item">
+        <select class="form-select toolbar-select" [(ngModel)]="methodFilter" (change)="onFilterChange()">
+          <option value="ALL">All Payment Modes</option>
+          <option value="1">Cash on Delivery (COD)</option>
+          <option value="2">Instant UPI</option>
+        </select>
+      </div>
+
+      <!-- Reset Filters Button -->
+      <button 
+        *ngIf="searchTerm || statusFilter !== 'ALL' || methodFilter !== 'ALL'"
+        class="btn btn-outline-danger btn-reset-filter"
+        (click)="resetFilters()"
+        type="button"
+        title="Reset all filters"
+      >
+        <i class="fa-solid fa-rotate-left me-1"></i> Reset
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="glass-card p-5 text-center my-4">
+    <i class="fa-solid fa-spinner fa-spin fa-2x text-primary mb-3"></i>
+    <p class="text-muted fw-semibold">Loading payment transactions...</p>
+  </div>
+
+  <!-- Transactions Table Card -->
+  <div *ngIf="!isLoading" class="glass-card table-card p-0 overflow-hidden">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0 custom-payment-table">
+        <thead class="table-light">
+          <tr>
+            <th>Txn ID</th>
+            <th>Order #</th>
+            <th *ngIf="isAdminOrSuperAdmin">Customer</th>
+            <th>Amount</th>
+            <th>Payment Mode</th>
+            <th>Payment Status</th>
+            <th>Transaction Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of paginatedPayments">
+            <!-- Txn ID -->
+            <td>
+              <span class="fw-bold text-dark font-monospace">#{{ item.id }}</span>
+              <div *ngIf="item.transactionId" class="small text-muted font-monospace text-truncate" style="max-width: 140px;" [title]="item.transactionId">
+                {{ item.transactionId }}
+              </div>
+            </td>
+
+            <!-- Order # -->
+            <td>
+              <span class="badge bg-light text-dark border">
+                <i class="fa-solid fa-receipt text-primary me-1"></i>
+                {{ item.orderNumber || ('ORD-' + item.orderId) }}
+              </span>
+            </td>
+
+            <!-- Customer (If Admin) -->
+            <td *ngIf="isAdminOrSuperAdmin">
+              <span class="fw-bold text-dark">{{ item.customerName || 'Customer' }}</span>
+            </td>
+
+            <!-- Amount -->
+            <td>
+              <span class="fw-bold text-dark fs-6">₹{{ item.amount | number:'1.2-2' }}</span>
+            </td>
+
+            <!-- Mode -->
+            <td>
+              <span class="d-inline-flex align-items-center gap-1 payment-mode-pill" [class.mode-cod]="item.paymentMethod === 1" [class.mode-upi]="item.paymentMethod === 2">
+                <i [class]="getMethodIcon(item.paymentMethod)"></i>
+                <span>{{ getMethodLabel(item.paymentMethod) }}</span>
+              </span>
+            </td>
+
+            <!-- Status -->
+            <td>
+              <span class="badge" [ngClass]="getStatusBadgeClass(item.paymentStatus)">
+                <i class="fa-solid fa-circle me-1 status-dot"></i>
+                {{ getStatusLabel(item.paymentStatus) }}
+              </span>
+            </td>
+
+            <!-- Date -->
+            <td>
+              <div class="text-dark small fw-semibold">
+                {{ item.createdOn | date:'mediumDate' }}
+              </div>
+              <div class="text-muted" style="font-size: 0.78rem;">
+                {{ item.createdOn | date:'shortTime' }}
+              </div>
+            </td>
+          </tr>
+
+          <!-- Empty State -->
+          <tr *ngIf="filteredPayments.length === 0">
+            <td [attr.colspan]="isAdminOrSuperAdmin ? 7 : 6" class="text-center py-5">
+              <div class="empty-state-box">
+                <i class="fa-solid fa-receipt fa-3x text-muted mb-3 opacity-50"></i>
+                <h5 class="fw-bold text-dark">No Payment Transactions Found</h5>
+                <p class="text-muted small">No transactions matched your current search and filter criteria.</p>
+                <button class="btn btn-outline-primary btn-sm mt-2" (click)="resetFilters()">
+                  Clear Filters
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination Footer -->
+    <div *ngIf="filteredPayments.length > pageSize" class="d-flex justify-content-between align-items-center p-3 border-top bg-light">
+      <small class="text-muted">
+        Showing {{ (currentPage - 1) * pageSize + 1 }} to {{ Math.min(currentPage * pageSize, filteredPayments.length) }} of {{ filteredPayments.length }} transactions
+      </small>
+
+      <div class="btn-group btn-group-sm">
+        <button class="btn btn-outline-secondary" [disabled]="currentPage === 1" (click)="setPage(currentPage - 1)">
+          <i class="fa-solid fa-chevron-left"></i> Prev
+        </button>
+        <button class="btn btn-outline-secondary" disabled>
+          Page {{ currentPage }} of {{ totalPages }}
+        </button>
+        <button class="btn btn-outline-secondary" [disabled]="currentPage === totalPages" (click)="setPage(currentPage + 1)">
+          Next <i class="fa-solid fa-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

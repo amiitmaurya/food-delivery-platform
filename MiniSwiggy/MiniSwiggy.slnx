@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="MiniSwiggy.Application/MiniSwiggy.Application.csproj" />
+  <Project Path="MiniSwiggy.Domain/MiniSwiggy.Domain.csproj" />
+  <Project Path="MiniSwiggy.Infrastructure/MiniSwiggy.Infrastructure.csproj" />
+  <Project Path="MiniSwiggy.Shared/MiniSwiggy.Shared.csproj" />
+  <Project Path="MiniSwiggy/MiniSwiggy.csproj" />
+</Solution>

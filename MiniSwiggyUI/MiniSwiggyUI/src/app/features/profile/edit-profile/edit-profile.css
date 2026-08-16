@@ -1,0 +1,44 @@
+/* ==========================================================
+   MINISWIGGY - GLASSMORPHISM EDIT PROFILE
+   ========================================================== */
+
+.edit-profile-page {
+  max-width: 680px;
+  margin: 2rem auto;
+}
+
+.profile-card {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-glass);
+  padding: 2.5rem 2.75rem;
+}
+
+.avatar-wrapper {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 1.5rem;
+}
+
+.profile-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--primary);
+  box-shadow: 0 10px 25px rgba(255, 82, 0, 0.3);
+  transition: var(--transition-fast);
+}
+
+.profile-avatar:hover {
+  transform: scale(1.04);
+}
+
+@media (max-width: 576px) {
+  .profile-card {
+    padding: 1.75rem 1.25rem;
+  }
+}

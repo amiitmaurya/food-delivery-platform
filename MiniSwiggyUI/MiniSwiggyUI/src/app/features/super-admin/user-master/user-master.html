@@ -1,0 +1,485 @@
+<div class="user-master-container">
+  <!-- Page Header -->
+  <div class="page-header-card glass-card mb-4">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+      <div>
+        <div class="header-pill-badge">
+          <i class="fa-solid fa-crown text-warning me-1"></i> User Directory & Access Master
+        </div>
+        <h2 class="page-title">User Master Management</h2>
+        <p class="page-subtitle">Manage all platform users, roles, account statuses, and system access permissions</p>
+      </div>
+      <button class="btn btn-primary btn-add-glow" (click)="openCreateModal()">
+        <i class="fa-solid fa-user-plus me-2"></i> Add New User
+      </button>
+    </div>
+  </div>
+
+  <!-- KPI Metric Cards Row (5 Cards) -->
+  <div class="kpi-users-grid mb-4">
+    <!-- Total Users -->
+    <div class="glass-card kpi-metric-card">
+      <div class="kpi-icon-square bg-sapphire-light">
+        <i class="fa-solid fa-users text-sapphire"></i>
+      </div>
+      <div class="kpi-metric-body">
+        <span class="kpi-tag-label">Total Users</span>
+        <h3 class="kpi-number-val">{{ stats.totalUsers }}</h3>
+        <span class="kpi-trend-note text-success"><i class="fa-solid fa-circle-check me-1"></i>{{ stats.activeUsers }} Active</span>
+      </div>
+    </div>
+
+    <!-- Super Admins -->
+    <div class="glass-card kpi-metric-card">
+      <div class="kpi-icon-square bg-gold-light">
+        <i class="fa-solid fa-crown text-gold"></i>
+      </div>
+      <div class="kpi-metric-body">
+        <span class="kpi-tag-label">Super Admins</span>
+        <h3 class="kpi-number-val">{{ stats.totalSuperAdmins }}</h3>
+        <span class="kpi-trend-note text-warning">Master Controllers</span>
+      </div>
+    </div>
+
+    <!-- System Admins -->
+    <div class="glass-card kpi-metric-card">
+      <div class="kpi-icon-square bg-violet-light">
+        <i class="fa-solid fa-shield-halved text-violet"></i>
+      </div>
+      <div class="kpi-metric-body">
+        <span class="kpi-tag-label">System Admins</span>
+        <h3 class="kpi-number-val">{{ stats.totalAdmins }}</h3>
+        <span class="kpi-trend-note text-muted">Portal Managers</span>
+      </div>
+    </div>
+
+    <!-- Customers -->
+    <div class="glass-card kpi-metric-card">
+      <div class="kpi-icon-square bg-emerald-light">
+        <i class="fa-solid fa-user text-emerald"></i>
+      </div>
+      <div class="kpi-metric-body">
+        <span class="kpi-tag-label">Customers</span>
+        <h3 class="kpi-number-val">{{ stats.totalCustomers }}</h3>
+        <span class="kpi-trend-note text-muted">Food Consumers</span>
+      </div>
+    </div>
+
+    <!-- Delivery Fleet -->
+    <div class="glass-card kpi-metric-card">
+      <div class="kpi-icon-square bg-flame-light">
+        <i class="fa-solid fa-person-biking text-flame"></i>
+      </div>
+      <div class="kpi-metric-body">
+        <span class="kpi-tag-label">Delivery Fleet</span>
+        <h3 class="kpi-number-val">{{ stats.totalDeliveryPartners }}</h3>
+        <span class="kpi-trend-note text-muted">Active Riders</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter & Search Unified Toolbar -->
+  <div class="glass-card filter-toolbar-card mb-4">
+    <div class="toolbar-flex-container">
+      <!-- Search Input Box -->
+      <div class="toolbar-search-box">
+        <i class="fa-solid fa-magnifying-glass search-leading-icon"></i>
+        <input 
+          type="text" 
+          [(ngModel)]="searchQuery" 
+          class="form-control toolbar-search-input" 
+          placeholder="Search by name, email, phone or role..."
+        />
+        <button *ngIf="searchQuery" class="search-clear-btn" (click)="searchQuery = ''">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Role Filter Pills Group -->
+      <div class="toolbar-pills-group">
+        <button 
+          type="button" 
+          class="filter-pill-btn" 
+          [class.pill-active]="selectedRoleFilter === 'All'" 
+          (click)="selectedRoleFilter = 'All'"
+        >All ({{ users.length }})</button>
+
+        <button 
+          type="button" 
+          class="filter-pill-btn" 
+          [class.pill-active]="selectedRoleFilter === 'SuperAdmin'" 
+          (click)="selectedRoleFilter = 'SuperAdmin'"
+        ><i class="fa-solid fa-crown text-warning me-1"></i> SuperAdmin</button>
+
+        <button 
+          type="button" 
+          class="filter-pill-btn" 
+          [class.pill-active]="selectedRoleFilter === 'Admin'" 
+          (click)="selectedRoleFilter = 'Admin'"
+        ><i class="fa-solid fa-shield-halved text-primary me-1"></i> Admin</button>
+
+        <button 
+          type="button" 
+          class="filter-pill-btn" 
+          [class.pill-active]="selectedRoleFilter === 'Customer'" 
+          (click)="selectedRoleFilter = 'Customer'"
+        >Customer</button>
+
+        <button 
+          type="button" 
+          class="filter-pill-btn" 
+          [class.pill-active]="selectedRoleFilter === 'DeliveryPartner'" 
+          (click)="selectedRoleFilter = 'DeliveryPartner'"
+        >Riders</button>
+      </div>
+
+      <!-- Status Dropdown -->
+      <div class="toolbar-dropdown-box">
+        <select class="form-select toolbar-status-select" [(ngModel)]="selectedStatusFilter">
+          <option value="All">All Statuses</option>
+          <option value="Active">Active Only</option>
+          <option value="Inactive">Inactive Only</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="glass-card loading-box text-center my-4">
+    <i class="fa-solid fa-circle-notch fa-spin fa-2x text-primary mb-3"></i>
+    <h5>Loading user master directory...</h5>
+  </div>
+
+  <!-- Empty Results State -->
+  <div *ngIf="!isLoading && filteredUsers.length === 0" class="glass-card empty-results-box text-center my-4 p-5">
+    <i class="fa-solid fa-user-slash fa-3x text-muted mb-3"></i>
+    <h4>No Users Found</h4>
+    <p class="text-muted">No user accounts match your active search or filter criteria.</p>
+    <button class="btn btn-outline-primary btn-sm mt-2" (click)="searchQuery = ''; selectedRoleFilter = 'All'; selectedStatusFilter = 'All'">
+      <i class="fa-solid fa-arrows-rotate me-1"></i> Reset Filters
+    </button>
+  </div>
+
+  <!-- User Master Directory Table -->
+  <div *ngIf="!isLoading && filteredUsers.length > 0" class="glass-card user-table-card p-3">
+    <div class="table-info-header d-flex justify-content-between align-items-center mb-3">
+      <span class="text-muted small">Showing <strong>{{ filteredUsers.length }}</strong> of <strong>{{ users.length }}</strong> users</span>
+      <button class="btn btn-sm btn-outline-secondary" (click)="loadUsers(); loadStats()">
+        <i class="fa-solid fa-arrows-rotate me-1"></i> Refresh
+      </button>
+    </div>
+
+    <div class="table-responsive user-table-responsive">
+      <table class="table user-custom-table align-middle mb-0">
+        <thead>
+          <tr>
+            <th style="min-width: 220px;">User Details</th>
+            <th style="min-width: 200px;">Contact & Email</th>
+            <th style="min-width: 130px;">Role</th>
+            <th style="min-width: 100px;">Status</th>
+            <th style="min-width: 130px;">Activity</th>
+            <th style="min-width: 110px;">Joined</th>
+            <th style="min-width: 150px;" class="text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let u of filteredUsers" [class.row-inactive]="!u.isActive">
+            <!-- User Details -->
+            <td>
+              <div class="d-flex align-items-center gap-2">
+                <div class="user-avatar-badge" [class.badge-gold-ring]="u.roleName === 'SuperAdmin'">
+                  <img *ngIf="u.imageUrl" [src]="u.imageUrl" [alt]="u.fullName" (error)="u.imageUrl = ''" />
+                  <span *ngIf="!u.imageUrl">{{ u.fullName.charAt(0).toUpperCase() }}</span>
+                </div>
+                <div class="user-name-col">
+                  <div class="user-display-name">{{ u.fullName }}</div>
+                  
+                </div>
+              </div>
+            </td>
+
+            <!-- Contact & Email -->
+            <td>
+              <div class="user-email-text" [title]="u.email">
+                <i class="fa-regular fa-envelope me-1 text-muted"></i>{{ u.email }}
+              </div>
+              <div class="user-phone-text small text-muted">
+                <i class="fa-solid fa-phone me-1 text-muted"></i>{{ u.phoneNumber || '—' }}
+              </div>
+            </td>
+
+            <!-- Role Badge -->
+            <td>
+              <span class="role-badge-tag" [ngClass]="getRoleBadgeClass(u.roleName)">
+                <i [ngClass]="getRoleIcon(u.roleName)" class="me-1"></i>
+                {{ u.roleName }}
+              </span>
+            </td>
+
+            <!-- Status -->
+            <td>
+              <span *ngIf="u.isActive" class="status-chip chip-active">
+                <i class="fa-solid fa-circle me-1 small-dot"></i> Active
+              </span>
+              <span *ngIf="!u.isActive" class="status-chip chip-inactive">
+                <i class="fa-solid fa-circle me-1 small-dot"></i> Inactive
+              </span>
+            </td>
+
+            <!-- Platform Activity -->
+            <td>
+              <div class="d-flex align-items-center gap-1">
+                <span class="activity-chip" title="Orders Count">
+                  <i class="fa-solid fa-bag-shopping text-primary me-1"></i><strong>{{ u.ordersCount }}</strong>
+                </span>
+                <span class="activity-chip" title="Addresses Count">
+                  <i class="fa-solid fa-location-dot text-danger me-1"></i><strong>{{ u.addressesCount }}</strong>
+                </span>
+              </div>
+            </td>
+
+            <!-- Joined Date (Nowrap) -->
+            <td>
+              <span class="joined-date-text">{{ u.createdOn | date:'dd MMM yyyy' }}</span>
+            </td>
+
+            <!-- Action Buttons Group (3 buttons: Edit, Toggle Active/Inactive, Reset Password) -->
+            <td class="text-end">
+              <div class="action-buttons-group">
+                <!-- Edit Button -->
+                <button 
+                  class="btn-icon-action btn-edit" 
+                  (click)="openEditModal(u)" 
+                  title="Edit User"
+                >
+                  <i class="fa-solid fa-pen"></i>
+                </button>
+
+                <!-- Toggle Status Button -->
+                <button 
+                  class="btn-icon-action" 
+                  [ngClass]="u.isActive ? 'btn-toggle-active' : 'btn-toggle-inactive'" 
+                  (click)="toggleStatus(u)" 
+                  [title]="u.isActive ? 'Deactivate Account' : 'Activate Account'"
+                >
+                  <i class="fa-solid" [ngClass]="u.isActive ? 'fa-toggle-on' : 'fa-toggle-off'"></i>
+                </button>
+
+                <!-- Password Reset Button -->
+                <button 
+                  class="btn-icon-action btn-key" 
+                  (click)="openResetPasswordModal(u)" 
+                  title="Reset Password"
+                >
+                  <i class="fa-solid fa-key"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ADD / EDIT USER MODAL -->
+  <div *ngIf="showAddEditModal" class="modal-overlay-backdrop">
+    <div class="modal-box-glass modal-box-lg">
+      <div class="modal-box-header">
+        <div class="d-flex align-items-center gap-3">
+          <div class="modal-box-icon" [class.edit-icon]="isEditing">
+            <i class="fa-solid" [ngClass]="isEditing ? 'fa-user-pen' : 'fa-user-plus'"></i>
+          </div>
+          <div>
+            <h4>{{ isEditing ? 'Edit User Master Record' : 'Add New User Master Record' }}</h4>
+            <span class="text-muted small">Update profile, roles, access permissions and credentials</span>
+          </div>
+        </div>
+        <button class="modal-close-icon-btn" (click)="showAddEditModal = false"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="modal-box-body">
+        <div class="row g-3">
+          <!-- Full Name -->
+          <div class="col-md-6">
+            <label class="form-label fw-bold">Full Name *</label>
+            <div class="input-icon-field">
+              <i class="fa-solid fa-user"></i>
+              <input 
+                type="text" 
+                [(ngModel)]="userFormData.fullName" 
+                class="form-control" 
+                placeholder="e.g. Rahul Sharma" 
+                required
+              />
+            </div>
+          </div>
+
+          <!-- Email Address -->
+          <div class="col-md-6">
+            <label class="form-label fw-bold">Email Address *</label>
+            <div class="input-icon-field">
+              <i class="fa-solid fa-envelope"></i>
+              <input 
+                type="email" 
+                [(ngModel)]="userFormData.email" 
+                class="form-control" 
+                placeholder="e.g. rahul@example.com" 
+                required
+              />
+            </div>
+          </div>
+
+          <!-- Phone Number -->
+          <div class="col-md-6">
+            <label class="form-label fw-bold">Phone Number</label>
+            <div class="input-phone-container">
+              <span class="input-phone-prefix">+91</span>
+              <input 
+                type="tel" 
+                [(ngModel)]="userFormData.phoneNumber" 
+                class="form-control" 
+                placeholder="9876543210" 
+                maxlength="10"
+                inputmode="numeric"
+                (keypress)="onlyNumbers($event)"
+                (input)="onPhoneInput($event)"
+              />
+            </div>
+          </div>
+
+          <!-- Role Selector -->
+          <div class="col-md-6">
+            <label class="form-label fw-bold">System Role *</label>
+            <div class="input-icon-field">
+              <i class="fa-solid fa-shield-halved"></i>
+              <select [(ngModel)]="userFormData.roleId" class="form-select">
+                <option *ngFor="let role of roles" [value]="role.id">
+                  {{ role.name }} {{ role.name === 'SuperAdmin' ? '' : '' }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Password (Only on Create mode) -->
+          <div *ngIf="!isEditing" class="col-12">
+            <label class="form-label fw-bold">Initial Password * (Minimum 6 characters)</label>
+            <div class="input-icon-field">
+              <i class="fa-solid fa-lock"></i>
+              <input 
+                type="password" 
+                [(ngModel)]="userFormData.password" 
+                class="form-control" 
+                placeholder="Enter Password" 
+                required
+              />
+            </div>
+            <small class="text-muted">User can change this password after login.</small>
+          </div>
+
+          <!-- Active & Email Verified Toggles -->
+          <div class="col-12 mt-2 d-flex gap-4">
+            <label class="checkbox-container">
+              <input type="checkbox" [(ngModel)]="userFormData.isActive" />
+              <span class="checkmark"></span>
+              <span class="checkbox-text">Is User Account Active</span>
+            </label>
+
+            <label class="checkbox-container" *ngIf="isEditing">
+              <input type="checkbox" [(ngModel)]="userFormData.emailVerified" />
+              <span class="checkmark"></span>
+              <span class="checkbox-text">Email Address Verified</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-box-footer">
+        <button class="btn btn-secondary" (click)="showAddEditModal = false">Cancel</button>
+        <button class="btn btn-primary" (click)="saveUser()">
+          <i class="fa-solid fa-floppy-disk me-1"></i> {{ isEditing ? 'Save Changes' : 'Create User' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DELETE CONFIRMATION MODAL -->
+  <div *ngIf="showDeleteModal" class="modal-overlay-backdrop">
+    <div class="modal-box-glass modal-box-sm border-danger">
+      <div class="modal-delete-content text-center p-4">
+        <div class="delete-icon-animated mb-3">
+          <i class="fa-solid fa-triangle-exclamation text-danger fa-3x"></i>
+        </div>
+        <h4 class="text-danger fw-bold mb-2">Delete User Master?</h4>
+        <p class="text-muted mb-3">
+          Are you sure you want to delete user account:
+          <br />
+          <strong class="text-dark fs-5">{{ userToDelete?.fullName }}</strong> ({{ userToDelete?.email }})?
+        </p>
+        <div class="alert alert-warning text-start small mb-4">
+          <i class="fa-solid fa-circle-info me-1"></i>
+          This action will revoke login access while safely preserving order history references.
+        </div>
+        <div class="d-flex justify-content-center gap-3">
+          <button class="btn btn-secondary" (click)="showDeleteModal = false" [disabled]="isDeleting">Cancel</button>
+          <button class="btn btn-danger" (click)="confirmDelete()" [disabled]="isDeleting">
+            <span *ngIf="!isDeleting"><i class="fa-solid fa-trash-can me-1"></i> Yes, Delete User</span>
+            <span *ngIf="isDeleting"><i class="fa-solid fa-spinner fa-spin me-1"></i> Deleting...</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESET PASSWORD MODAL -->
+  <div *ngIf="showResetPasswordModal" class="modal-overlay-backdrop">
+    <div class="modal-box-glass modal-box-sm">
+      <div class="modal-box-header">
+        <div class="d-flex align-items-center gap-3">
+          <div class="modal-box-icon bg-amber-light">
+            <i class="fa-solid fa-key text-amber"></i>
+          </div>
+          <div>
+            <h4>Admin Password Reset</h4>
+            <span class="text-muted small">Set new password for {{ userToResetPassword?.fullName }}</span>
+          </div>
+        </div>
+        <button class="modal-close-icon-btn" (click)="showResetPasswordModal = false"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="modal-box-body">
+        <div class="mb-3">
+          <label class="form-label fw-bold">New Password *</label>
+          <div class="input-icon-field">
+            <i class="fa-solid fa-lock"></i>
+            <input 
+              type="password" 
+              [(ngModel)]="resetPasswordModel.newPassword" 
+              class="form-control" 
+              placeholder="Minimum 6 characters" 
+            />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-bold">Confirm New Password *</label>
+          <div class="input-icon-field">
+            <i class="fa-solid fa-lock"></i>
+            <input 
+              type="password" 
+              [(ngModel)]="resetPasswordModel.confirmPassword" 
+              class="form-control" 
+              placeholder="Repeat new password" 
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-box-footer">
+        <button class="btn btn-secondary" (click)="showResetPasswordModal = false">Cancel</button>
+        <button class="btn btn-warning text-dark fw-bold" (click)="saveResetPassword()">
+          <i class="fa-solid fa-check me-1"></i> Update Password
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

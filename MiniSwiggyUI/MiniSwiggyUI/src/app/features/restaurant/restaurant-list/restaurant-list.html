@@ -1,0 +1,238 @@
+<div class="restaurant-explorer-page">
+  <!-- Hero Carousel Banners -->
+  <!--<section class="hero-banners-section">
+    <div class="banners-carousel">
+      <div 
+        *ngFor="let banner of heroBanners" 
+        class="banner-card"
+        [style.background]="banner.bg"
+      >
+        <div class="banner-content">
+          <span class="banner-badge"><i class="fa-solid" [ngClass]="banner.icon"></i> Special Offer</span>
+          <h2>{{ banner.title }}</h2>
+          <p>{{ banner.subtitle }}</p>
+          <div class="coupon-pill">Use Code: <strong>{{ banner.code }}</strong></div>
+        </div>
+      </div>
+    </div>
+  </section>-->
+
+  <!-- Categories Scroll Section ("What's on your mind?") -->
+  <section class="categories-section">
+    <h3 class="section-title">What's on your mind?</h3>
+    <div class="categories-flex">
+      <button 
+        class="cat-chip" 
+        [class.active]="selectedCategoryName === null"
+        (click)="selectCategoryByName(null)"
+      >
+        <i class="fa-solid fa-utensils"></i> All Cuisines
+      </button>
+
+      <button 
+        class="cat-chip"
+        [class.active]="selectedCategoryName === 'Pizza'"
+        (click)="selectCategoryByName('Pizza')"
+      >
+        <i class="fa-solid fa-pizza-slice"></i> Pizza
+      </button>
+
+      <button 
+        class="cat-chip"
+        [class.active]="selectedCategoryName === 'Biryani'"
+        (click)="selectCategoryByName('Biryani')"
+      >
+        <i class="fa-solid fa-bowl-rice"></i> Biryani
+      </button>
+
+      <button 
+        class="cat-chip"
+        [class.active]="selectedCategoryName === 'Burger'"
+        (click)="selectCategoryByName('Burger')"
+      >
+        <i class="fa-solid fa-burger"></i> Burger
+      </button>
+
+      <button 
+        class="cat-chip"
+        [class.active]="selectedCategoryName === 'Chinese'"
+        (click)="selectCategoryByName('Chinese')"
+      >
+        <i class="fa-solid fa-bowl-food"></i> Chinese
+      </button>
+
+      <button 
+        class="cat-chip"
+        [class.active]="selectedCategoryName === 'Desserts'"
+        (click)="selectCategoryByName('Desserts')"
+      >
+        <i class="fa-solid fa-ice-cream"></i> Desserts
+      </button>
+
+      <button 
+        *ngFor="let cat of categories" 
+        class="cat-chip"
+        [class.active]="selectedCategoryName === cat.name"
+        (click)="selectCategoryByName(cat.name)"
+      >
+        <i class="fa-solid fa-utensils cat-icon-fa"></i>
+        <span>{{ cat.name }}</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- Filter Controls & Restaurant Header -->
+  <section class="restaurants-main">
+    <div class="filter-bar">
+      <div class="filter-title">
+        <h3>Top Partner Restaurants</h3>
+        <span class="restaurant-count" *ngIf="!isLoading">({{ filteredRestaurants.length }} Places)</span>
+      </div>
+
+      <div class="filter-pills">
+        <!-- Live Smart Search Input -->
+        <div class="search-inline-box">
+          <i class="fa-solid fa-magnifying-glass search-inline-icon"></i>
+          <input 
+            type="text" 
+            [(ngModel)]="searchQuery" 
+            (input)="applyFilters()" 
+            placeholder="Search restaurants, cuisines, dishes..." 
+            class="search-inline-input"
+          />
+          <button *ngIf="searchQuery" (click)="searchQuery = ''; applyFilters()" class="clear-inline-btn" title="Clear">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <!-- Sort By Dropdown -->
+        <select class="form-select-sm sort-select" (change)="onSortChange($event)" [value]="sortBy">
+          <option value="rating">Sort: Top Rated ★</option>
+          <option value="name">Sort: Name (A-Z)</option>
+        </select>
+
+        <!-- Veg Only Filter 🟢 -->
+        <button 
+          class="filter-pill veg-pill" 
+          [class.active]="vegOnlyFilter"
+          (click)="toggleVegFilter()"
+        >
+          <span class="food-symbol veg-symbol"></span> Veg Only
+        </button>
+
+        <!-- Non-Veg Filter 🔴 -->
+        <button 
+          class="filter-pill nonveg-pill" 
+          [class.active]="nonVegFilter"
+          (click)="toggleNonVegFilter()"
+        >
+          <span class="food-symbol nonveg-symbol"></span> Non-Veg
+        </button>
+
+        <!-- Rating 4.3+ Filter -->
+        <button 
+          class="filter-pill" 
+          [class.active]="highRatingFilter"
+          (click)="toggleRatingFilter()"
+        >
+          <i class="fa-solid fa-star text-warning"></i> Rating 4.3+
+        </button>
+
+        <button 
+          *ngIf="searchQuery || selectedCategoryName || vegOnlyFilter || nonVegFilter || highRatingFilter" 
+          class="filter-pill clear-search-pill"
+          (click)="searchQuery = ''; selectedCategoryName = null; vegOnlyFilter = false; nonVegFilter = false; highRatingFilter = false; applyFilters()"
+        >
+          Reset Filters <i class="fa-solid fa-xmark ms-1"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Shimmer Skeleton Loading -->
+    <div *ngIf="isLoading" class="restaurant-grid">
+      <div *ngFor="let item of [1,2,3,4,5,6]" class="restaurant-card skeleton-card">
+        <div class="skeleton img-skeleton"></div>
+        <div class="card-body">
+          <div class="skeleton text-skeleton title-sk"></div>
+          <div class="skeleton text-skeleton desc-sk"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- No Data State -->
+    <div *ngIf="!isLoading && filteredRestaurants.length === 0" class="no-data-card glass-card">
+      <div class="no-data-icon-wrapper">
+        <i class="fa-solid fa-utensils-slash"></i>
+      </div>
+      <h3>No Restaurants Found</h3>
+      <p>We couldn't find any partner restaurants matching your search query or filters.</p>
+      
+      <div class="no-data-actions">
+        <button class="btn btn-primary" (click)="searchQuery = ''; selectedCategoryName = null; vegOnlyFilter = false; nonVegFilter = false; highRatingFilter = false; applyFilters()">
+          <i class="fa-solid fa-arrows-rotate"></i> Reset All Filters
+        </button>
+        <button class="btn btn-outline-primary" (click)="loadData()">
+          <i class="fa-solid fa-arrows-rotate"></i> Refresh 
+        </button>
+      </div>
+    </div>
+
+    <!-- Restaurant Cards Grid -->
+    <div *ngIf="!isLoading && paginatedRestaurants.length > 0" class="restaurant-grid">
+      <div 
+        *ngFor="let res of paginatedRestaurants" 
+        class="restaurant-card glass-card"
+        (click)="viewRestaurantMenu(res.id)"
+      >
+        <div class="card-img-wrapper">
+          <img [src]="res.imageUrl" [alt]="res.name" class="restaurant-img" />
+          <button 
+            class="fav-toggle-btn" 
+            [class.active]="isWishlisted(res.id)"
+            (click)="toggleWishlist(res, $event)"
+            title="Toggle Wishlist"
+          >
+            <i class="fa-solid fa-heart" [style.color]="isWishlisted(res.id) ? '#ef4444' : '#94a3b8'"></i>
+          </button>
+          <div class="status-overlay">
+            <span *ngIf="res.isOpen" class="badge badge-success"><i class="fa-solid fa-circle-check"></i> Open Now</span>
+            <span *ngIf="!res.isOpen" class="badge badge-danger"><i class="fa-solid fa-circle-xmark"></i> Closed</span>
+          </div>
+          <div class="offer-banner" *ngIf="res.isOpen">
+            <i class="fa-solid fa-tag me-1"></i> 50% OFF up to ₹100
+          </div>
+        </div>
+
+        <div class="card-body">
+          <div class="card-title-row">
+            <h4 class="restaurant-name">{{ res.name }}</h4>
+            <div class="rating-badge">
+              <i class="fa-solid fa-star"></i>
+              <span>{{ res.rating | number:'1.1-1' }}</span>
+            </div>
+          </div>
+
+          <p class="cuisines-text">{{ res.cuisineType }}</p>
+          <p class="location-text"><i class="fa-solid fa-location-dot me-1"></i> {{ res.address }}, {{ res.city }}</p>
+
+          <div class="card-footer-info">
+            <span><i class="fa-solid fa-motorcycle me-1"></i> 25-35 mins</span>
+            <span class="dot-sep">•</span>
+            <span>₹250 for two</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pagination Controls -->
+    <div *ngIf="!isLoading && totalPages > 1" class="pagination-bar mt-4">
+      <button class="btn btn-outline-secondary btn-sm" [disabled]="currentPage === 1" (click)="prevPage()">
+        <i class="fa-solid fa-chevron-left me-1"></i> Previous
+      </button>
+      <span class="page-indicator">Page {{ currentPage }} of {{ totalPages }}</span>
+      <button class="btn btn-outline-secondary btn-sm" [disabled]="currentPage === totalPages" (click)="nextPage()">
+        Next <i class="fa-solid fa-chevron-right ms-1"></i>
+      </button>
+    </div>
+  </section>
+</div>

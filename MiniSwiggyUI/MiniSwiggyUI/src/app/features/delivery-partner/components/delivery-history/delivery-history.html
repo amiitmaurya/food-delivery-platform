@@ -1,0 +1,49 @@
+<div class="delivery-history-container">
+  <div class="header-section">
+    <h2><i class="fa-solid fa-clock-rotate-left"></i> Delivery History</h2>
+    <p>View your completed order deliveries and customer feedback.</p>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-state">
+    <i class="fa-solid fa-spinner fa-spin"></i> Loading delivery history...
+  </div>
+
+  <div *ngIf="!isLoading && historyOrders.length === 0" class="empty-history">
+    <i class="fa-solid fa-box-open empty-icon"></i>
+    <h3>No Completed Deliveries Yet</h3>
+    <p>Completed orders will appear here automatically.</p>
+  </div>
+
+  <div *ngIf="!isLoading && historyOrders.length > 0" class="table-card">
+    <table class="history-table">
+      <thead>
+        <tr>
+          <th>Order No</th>
+          <th>Restaurant</th>
+          <th>Customer</th>
+          <th>Date & Time</th>
+          <th>Amount</th>
+          <th>Earnings</th>
+          <th>Rating</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let order of historyOrders">
+          <td><strong>#{{ order.orderNumber }}</strong></td>
+          <td>{{ order.restaurantName }}</td>
+          <td>{{ order.customerName }}</td>
+          <td>{{ (order.deliveredAt || order.orderDate) | date:'short' }}</td>
+          <td>₹{{ order.finalAmount }}</td>
+          <td class="earning-text">+₹40.00</td>
+          <td>
+            <span class="rating-stars">
+              <i class="fa-solid fa-star"></i> {{ order.customerRating || 5.0 }}
+            </span>
+          </td>
+          <td><span class="status-delivered"><i class="fa-solid fa-check"></i> Delivered</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

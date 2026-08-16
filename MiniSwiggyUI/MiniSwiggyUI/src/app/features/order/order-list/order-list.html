@@ -1,0 +1,101 @@
+<div class="order-list-page container">
+  <div class="page-header">
+    <h2><i class="fa-solid fa-clock-rotate-left me-2"></i> My Order History</h2>
+    <p>Track your current orders and review past delicious meals</p>
+  </div>
+
+  <!-- Shimmer Loader -->
+  <div *ngIf="isLoading" class="orders-flex">
+    <div *ngFor="let i of [1,2]" class="glass-card order-card skeleton-card">
+      <div class="skeleton img-skeleton" style="height: 120px;"></div>
+    </div>
+  </div>
+
+  <!-- Empty Orders State -->
+  <div *ngIf="!isLoading && orders.length === 0" class="empty-orders-card glass-card">
+    <i class="fa-solid fa-bag-shopping empty-icon"></i>
+    <h3>No Orders Placed Yet</h3>
+    <p>You haven't ordered any food yet. Explore top restaurants near you!</p>
+    <a routerLink="/restaurant" class="btn btn-primary btn-lg mt-3">Order Now</a>
+  </div>
+
+  <!-- Orders Flex List -->
+  <div *ngIf="!isLoading && orders.length > 0" class="orders-flex">
+    <div *ngFor="let order of orders" class="glass-card order-card">
+      <div class="order-header">
+        <div>
+          <span class="restaurant-name-header">{{ order.restaurantName || 'MiniSwiggy Partner Restaurant' }}</span>
+          <span class="order-id-tag">Order #{{ order.id }}</span>
+        </div>
+        <span class="badge" [ngClass]="getStatusClass(order.status)">{{ order.status }}</span>
+      </div>
+
+      <!-- Live Order Status Timeline (For Active Orders) -->
+      <div *ngIf="order.status !== 'Delivered' && order.status !== 'Cancelled'" class="status-timeline">
+        <div class="timeline-step" [class.completed]="getStatusStep(order.status) >= 1">
+          <div class="step-dot"><i class="fa-solid fa-check"></i></div>
+          <span>Placed</span>
+        </div>
+        <div class="timeline-line" [class.completed]="getStatusStep(order.status) >= 2"></div>
+
+        <div class="timeline-step" [class.completed]="getStatusStep(order.status) >= 2">
+          <div class="step-dot"><i class="fa-solid fa-thumbs-up"></i></div>
+          <span>Confirmed</span>
+        </div>
+        <div class="timeline-line" [class.completed]="getStatusStep(order.status) >= 3"></div>
+
+        <div class="timeline-step" [class.completed]="getStatusStep(order.status) >= 3">
+          <div class="step-dot"><i class="fa-solid fa-fire-burner"></i></div>
+          <span>Preparing</span>
+        </div>
+        <div class="timeline-line" [class.completed]="getStatusStep(order.status) >= 4"></div>
+
+        <div class="timeline-step" [class.completed]="getStatusStep(order.status) >= 4">
+          <div class="step-dot"><i class="fa-solid fa-motorcycle"></i></div>
+          <span>On the way</span>
+        </div>
+        <div class="timeline-line" [class.completed]="getStatusStep(order.status) >= 5"></div>
+
+        <div class="timeline-step" [class.completed]="getStatusStep(order.status) >= 5">
+          <div class="step-dot"><i class="fa-solid fa-house-chimney"></i></div>
+          <span>Delivered</span>
+        </div>
+      </div>
+
+      <!-- Order Items Detail Table -->
+      <div class="order-body">
+        <div class="order-items-summary">
+          <div *ngFor="let item of order.items" class="order-item-chip">
+            <span class="qty-tag">{{ item.quantity }}x</span>
+            <span class="item-name">{{ item.foodItemName }}</span>
+            <span class="item-price">₹{{ item.foodItemPrice * item.quantity }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Order Footer -->
+      <div class="order-footer">
+        <div class="delivery-addr">
+          <i class="fa-solid fa-location-dot me-1"></i> {{ order.deliveryAddress }}
+        </div>
+
+        <div class="order-price-cancel flex-align">
+          <div class="total-amount">
+            Total Paid: <strong>₹{{ order.finalAmount | number:'1.2-2' }}</strong>
+            <span *ngIf="order.discount > 0" class="badge bg-success ms-2">
+              <i class="fa-solid fa-tag me-1"></i> ₹{{ order.discount }} Coupon Saved
+            </span>
+          </div>
+
+          <button 
+            *ngIf="order.status === 'Placed' || order.status === 'Pending'" 
+            class="btn btn-danger btn-sm"
+            (click)="cancelOrder(order.id)"
+          >
+            Cancel Order
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

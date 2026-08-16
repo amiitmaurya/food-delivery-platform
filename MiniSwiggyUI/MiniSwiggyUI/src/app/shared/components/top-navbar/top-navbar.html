@@ -1,0 +1,161 @@
+<header class="top-navbar">
+  <!-- Left -->
+  <div class="nav-left">
+    <!-- 3-line Hamburger Menu Toggle Button for Mobile & Tablet -->
+    <button class="hamburger-btn" (click)="toggleSidebar()" title="Toggle Navigation Menu">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+
+    <a [routerLink]="authService.isDeliveryPartner() ? '/delivery-partner/dashboard' : '/restaurant'" class="brand-logo">
+      <i class="fa-solid fa-utensils logo-icon"></i>
+      <span class="brand-name">Mini<span>Swiggy</span></span>
+    </a>
+
+
+    <!-- Location Badge with Compact Popover Anchor -->
+    <div class="location-popover-wrapper">
+      <div class="location-badge" (click)="openLocationDrawer()" title="Select delivery address">
+        <i class="fa-solid fa-location-dot"></i>
+        <div class="location-text">
+          <span class="location-label">Deliver to</span>
+          <span class="location-val">{{ location | slice:0:22 }}<i class="fa-solid fa-chevron-down ms-1 small text-muted"></i></span>
+        </div>
+      </div>
+
+      <!-- Compact Swiggy-style Location Popover Card -->
+      <div *ngIf="showLocationDrawer" class="location-popover-card glass-card">
+        <div class="popover-header">
+          <span><i class="fa-solid fa-location-dot text-primary me-1"></i> Select Location</span>
+          <button class="popover-close-btn" (click)="closeLocationDrawer()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <div class="popover-body">
+          <!-- GPS Detect Button -->
+          <button class="gps-compact-btn" (click)="getCurrentLocation(); closeLocationDrawer()">
+            <i class="fa-solid fa-crosshairs text-primary"></i>
+            <span>Detect Current Location (GPS)</span>
+          </button>
+
+          <div class="popover-divider"><span>SAVED ADDRESSES</span></div>
+
+          <!-- Compact Saved Address Options -->
+          <div class="popover-address-list">
+            <div 
+              *ngFor="let addr of addresses" 
+              class="popover-addr-item"
+              [class.active]="addr.id === selectedAddressId"
+              (click)="selectAddress(addr)"
+            >
+              <i class="fa-solid fa-house addr-icon"></i>
+              <div class="addr-details">
+                <strong class="addr-title">{{ addr.street || addr.houseNo || addr.addressLine }}</strong>
+                <div class="addr-sub">{{ addr.city }}, {{ addr.state }} - {{ addr.pincode || addr.postalCode }}</div>
+              </div>
+              <i *ngIf="addr.id === selectedAddressId" class="fa-solid fa-circle-check text-success ms-auto fs-6"></i>
+            </div>
+          </div>
+
+          <!-- Add Address Button (Navigates to /addresses) -->
+          <div class="popover-footer">
+            <button class="btn btn-outline-primary btn-sm w-100" (click)="goToAddAddressPage()">
+              <i class="fa-solid fa-plus me-1"></i> Add / Manage Saved Addresses
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Center Search -->
+  <div class="nav-center">
+    <div class="search-box">
+      <i class="fa-solid fa-magnifying-glass search-icon" (click)="onSearch()"></i>
+      <input 
+        type="text" 
+        [(ngModel)]="searchQuery" 
+        (input)="onSmartSearch()"
+        (keyup.enter)="onSearch()"
+        placeholder="Search for restaurants, cuisines or dishes..." 
+      />
+      <button *ngIf="searchQuery" class="clear-btn" (click)="clearSearch()" title="Clear Search">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Right Actions -->
+  <div class="nav-right">
+    <!-- Cart Button (Hidden for Delivery Partner) -->
+    <button *ngIf="!authService.isDeliveryPartner()" class="nav-icon-btn cart-btn" (click)="goToCart()" title="Cart">
+      <i class="fa-solid fa-basket-shopping"></i>
+      <span class="cart-label">Cart</span>
+      <span class="cart-badge" *ngIf="(cartService.cartCount$ | async) as count">
+        {{ count }}
+      </span>
+    </button>
+
+    <!-- Orders Button (Mapped to Assigned Orders for Delivery Partner) -->
+    <a *ngIf="!authService.isDeliveryPartner()" routerLink="/my-orders" class="nav-link" title="My Orders">
+      <i class="fa-solid fa-bag-shopping"></i>
+      <span>Orders</span>
+    </a>
+
+    <a *ngIf="authService.isDeliveryPartner()" routerLink="/delivery-partner/assigned-orders" class="nav-link" title="Assigned Orders">
+      <i class="fa-solid fa-clipboard-list"></i>
+      <span>Assigned Orders</span>
+    </a>
+
+    <!-- User Profile & Dropdown -->
+    <div class="profile-dropdown-wrapper">
+      <div class="user-profile-btn" (click)="toggleDropdown($event)">
+        <img [src]="userImage" (error)="onImgError($event)" alt="User Avatar" class="avatar-img" />
+        <div class="user-info d-none d-md-block">
+          <span class="user-name">{{ userName }}</span>
+          <span class="user-role">{{ userRole }}</span>
+        </div>
+        <i class="fa-solid fa-chevron-down dropdown-arrow"></i>
+      </div>
+
+      <!-- Dropdown Menu -->
+      <div class="profile-menu glass-card" *ngIf="showDropdown">
+        <div class="menu-header">
+          <strong>{{ userName }}</strong>
+          <span class="badge bg-primary-light text-primary mt-1">{{ userRole }}</span>
+        </div>
+        <div class="menu-divider"></div>
+
+        <!-- Delivery Partner Specific Dropdown Items -->
+        <a *ngIf="authService.isDeliveryPartner()" routerLink="/delivery-partner/profile" (click)="closeDropdown()" class="menu-item">
+          <i class="fa-solid fa-user-gear me-2 text-primary"></i> Profile
+        </a>
+
+        <!-- Customer & Admin Items -->
+        <a *ngIf="!authService.isDeliveryPartner()" routerLink="/profile/edit" (click)="closeDropdown()" class="menu-item">
+          <i class="fa-solid fa-user-pen me-2 text-primary"></i> Edit Profile
+        </a>
+
+        <a *ngIf="!authService.isDeliveryPartner()" routerLink="/payment-history" (click)="closeDropdown()" class="menu-item">
+          <i class="fa-solid fa-receipt me-2 text-success"></i> Payment History
+        </a>
+
+        <a routerLink="/change-password" (click)="closeDropdown()" class="menu-item">
+          <i class="fa-solid fa-key me-2 text-warning"></i> Change Password
+        </a>
+
+        <!--<a *ngIf="authService.isAdmin() && !authService.isDeliveryPartner()" routerLink="/dashboard" (click)="closeDropdown()" class="menu-item">
+          <i class="fa-solid fa-chart-line me-2 text-success"></i> Admin Dashboard
+        </a>
+
+        <a *ngIf="!authService.isDeliveryPartner()" routerLink="/addresses" (click)="closeDropdown()" class="menu-item">
+          <i class="fa-solid fa-location-dot me-2 text-info"></i> Saved Addresses
+        </a>-->
+
+        <div class="menu-divider"></div>
+
+        <button (click)="logout()" class="menu-item logout-item">
+          <i class="fa-solid fa-right-from-bracket me-2 text-danger"></i> Logout
+        </button>
+      </div>
+    </div>
+  </div>
+</header>

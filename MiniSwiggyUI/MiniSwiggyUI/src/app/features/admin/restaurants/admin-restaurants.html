@@ -1,0 +1,343 @@
+<div class="admin-restaurants-page container-fluid px-lg-4 py-3">
+  <!-- Page Header Card -->
+  <div class="page-header-card glass-card mb-4">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+      <div>
+        <div class="header-pill-badge">
+          <i class="fa-solid fa-store text-primary me-1"></i> Partner Kitchens & Outlets Master
+        </div>
+        <h2 class="page-title">Restaurant Management</h2>
+        <p class="page-subtitle">Add, update, or remove partner restaurants, cloud kitchens, operational timings, and charges</p>
+      </div>
+      <button class="btn btn-primary btn-add-glow" (click)="openCreateModal()">
+        <i class="fa-solid fa-plus-circle me-2"></i> Add New Restaurant
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="glass-card loading-box text-center my-4 p-5">
+    <i class="fa-solid fa-circle-notch fa-spin fa-2x text-primary mb-3"></i>
+    <h5>Loading restaurant partners...</h5>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && restaurants.length === 0" class="glass-card text-center my-4 p-5">
+    <i class="fa-solid fa-store-slash fa-3x text-muted mb-3"></i>
+    <h3>No Restaurants Found </h3>
+    <p class="text-muted">Click "Add New Restaurant" above to create your first restaurant record.</p>
+  </div>
+
+  <!-- Filter & Search Toolbar -->
+  <div *ngIf="!isLoading && restaurants.length > 0" class="glass-card filter-toolbar-card mb-4">
+    <div class="toolbar-flex-container">
+      <div class="toolbar-search-box">
+        <i class="fa-solid fa-magnifying-glass search-leading-icon"></i>
+        <input 
+          type="text" 
+          [(ngModel)]="searchQuery" 
+          class="form-control toolbar-search-input" 
+          placeholder="Search restaurants, cuisine, owner or city..." 
+        />
+        <button *ngIf="searchQuery" class="search-clear-btn" (click)="searchQuery = ''">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="ms-auto d-flex align-items-center gap-2">
+        <span class="badge bg-light text-dark border px-3 py-2 fs-6">
+          <strong>{{ filteredRestaurants.length }}</strong> of <strong>{{ restaurants.length }}</strong> Kitchens
+        </span>
+        <button class="btn btn-sm btn-outline-secondary" (click)="loadRestaurants()">
+          <i class="fa-solid fa-arrows-rotate me-1"></i> Refresh
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Restaurants Table Card -->
+  <div *ngIf="!isLoading && restaurants.length > 0" class="glass-card user-table-card p-3 mb-4">
+    <div class="table-responsive">
+      <table class="table custom-unified-table align-middle mb-0">
+        <thead>
+          <tr>
+            <th style="min-width: 80px;">Image</th>
+            <th style="min-width: 220px;">Restaurant Details</th>
+            <th style="min-width: 180px;">Owner & Contact</th>
+            <th style="min-width: 180px;">Location</th>
+            <th style="min-width: 160px;">Pricing & ETA</th>
+            <th style="min-width: 100px;">Status</th>
+            <th style="min-width: 140px;" class="text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let res of filteredRestaurants" [class.row-closed]="!res.isOpen">
+            <!-- Image -->
+            <td>
+              <img [src]="formatImageUrl(res.imageUrl)" (error)="onImgError($event)" [alt]="res.name" class="restaurant-thumb-img" />
+            </td>
+
+            <!-- Restaurant Details -->
+            <td>
+              <div class="d-flex flex-column">
+                <strong class="res-name-title">{{ res.name }}</strong>
+                <div class="mt-1">
+                  <span class="cuisine-pill">{{ res.cuisineType || 'Multi-Cuisine' }}</span>
+                </div>
+                <div class="text-muted small text-truncate mt-1" style="max-width: 220px;">{{ res.description }}</div>
+              </div>
+            </td>
+
+            <!-- Owner & Contact -->
+            <td>
+              <div class="owner-name fw-bold">{{ res.ownerName || 'Manager' }}</div>
+              <div class="owner-contact small text-muted">
+                <i class="fa-solid fa-phone me-1 text-muted"></i>{{ res.mobileNumber || res.phoneNumber || '9876543210' }}
+              </div>
+              <div *ngIf="res.email" class="owner-email small text-muted text-truncate" style="max-width: 170px;">
+                <i class="fa-regular fa-envelope me-1 text-muted"></i>{{ res.email }}
+              </div>
+            </td>
+
+            <!-- Location -->
+            <td>
+              <div class="city-state fw-bold">{{ res.city }}, {{ res.state || 'Delhi' }}</div>
+              <div class="address-text small text-muted text-truncate" style="max-width: 170px;">
+                <i class="fa-solid fa-location-dot me-1 text-danger"></i>{{ res.address }}
+              </div>
+              <div class="pincode-text small text-muted">Pin: {{ res.pincode || '110001' }}</div>
+            </td>
+
+            <!-- Pricing & ETA -->
+            <td>
+              <div class="rating-price-row mb-1">
+                <span class="badge bg-warning text-dark fw-bold me-1">★ {{ res.rating || 4.5 }}</span>
+                <span class="small fw-bold">₹{{ res.averageCostForTwo || 300 }} for 2</span>
+              </div>
+              <div class="delivery-time-row small text-muted">
+                <i class="fa-solid fa-motorcycle text-primary me-1"></i>{{ res.deliveryTime || 30 }} mins (₹{{ res.deliveryCharge || 30 }} fee)
+              </div>
+            </td>
+
+            <!-- Status -->
+            <td>
+              <span *ngIf="res.isOpen" class="status-chip chip-active">
+                <i class="fa-solid fa-circle me-1 small-dot"></i> OPEN
+              </span>
+              <span *ngIf="!res.isOpen" class="status-chip chip-inactive">
+                <i class="fa-solid fa-circle me-1 small-dot"></i> CLOSED
+              </span>
+            </td>
+
+            <!-- Actions (Edit and Toggle Open/Closed) -->
+            <td class="text-end">
+              <div class="action-buttons-group">
+                <button class="btn-icon-action btn-edit" (click)="openEditModal(res)" title="Edit Restaurant">
+                  <i class="fa-solid fa-pen"></i>
+                </button>
+                <button 
+                  class="btn-icon-action" 
+                  [ngClass]="res.isOpen ? 'btn-toggle-active' : 'btn-toggle-inactive'" 
+                  (click)="toggleStatus(res)" 
+                  [title]="res.isOpen ? 'Close Restaurant' : 'Open Restaurant'"
+                >
+                  <i class="fa-solid" [ngClass]="res.isOpen ? 'fa-toggle-on' : 'fa-toggle-off'"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Add / Edit Restaurant Modal -->
+  <div *ngIf="showModal" class="modal-overlay-backdrop">
+    <div class="modal-box-glass modal-box-lg">
+      <div class="modal-box-header">
+        <div class="d-flex align-items-center gap-3">
+          <div class="modal-box-icon" [class.edit-icon]="editingId > 0">
+            <i class="fa-solid" [ngClass]="editingId > 0 ? 'fa-store' : 'fa-plus'"></i>
+          </div>
+          <div>
+            <h4>{{ editingId === 0 ? 'Add New Restaurant' : 'Edit Restaurant' }}</h4>
+            <span class="text-muted small">Configure dining info, delivery charges, operational hours & owner details</span>
+          </div>
+        </div>
+        <button class="modal-close-icon-btn" (click)="showModal = false"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="modal-box-body">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label fw-bold">Restaurant Name *</label>
+            <div class="input-icon-field">
+              <i class="fa-solid fa-store"></i>
+              <input type="text" [(ngModel)]="formData.name" class="form-control" placeholder="e.g. Domino's Pizza" />
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-bold">Cuisine Type *</label>
+            <div class="input-icon-field">
+              <i class="fa-solid fa-utensils"></i>
+              <input type="text" [(ngModel)]="formData.cuisineType" class="form-control" placeholder="e.g. Italian, Pizza, Fast Food" />
+            </div>
+          </div>
+
+          <div class="col-12">
+            <label class="form-label fw-bold">Description</label>
+            <textarea [(ngModel)]="formData.description" class="form-control" rows="2" placeholder="Brief description of specialties..."></textarea>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label fw-bold">Owner Name *</label>
+            <div class="input-icon-field">
+              <i class="fa-solid fa-user"></i>
+              <input type="text" [(ngModel)]="formData.ownerName" class="form-control" placeholder="Amit Sharma" />
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label fw-bold">Mobile Number *</label>
+            <div class="input-phone-container">
+              <span class="input-phone-prefix">+91</span>
+              <input 
+                type="tel" 
+                [(ngModel)]="formData.mobileNumber" 
+                class="form-control" 
+                placeholder="9876543210" 
+                maxlength="10"
+                inputmode="numeric"
+                (keypress)="onlyNumbers($event)"
+                (input)="onPhoneInput($event)"
+              />
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label fw-bold">Email Address</label>
+            <div class="input-icon-field">
+              <i class="fa-solid fa-envelope"></i>
+              <input type="email" [(ngModel)]="formData.email" class="form-control" placeholder="contact@restaurant.com" />
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label fw-bold">City *</label>
+            <input type="text" [(ngModel)]="formData.city" class="form-control" placeholder="e.g. Delhi" />
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label fw-bold">State</label>
+            <input type="text" [(ngModel)]="formData.state" class="form-control" placeholder="Delhi" />
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label fw-bold">Pincode</label>
+            <input type="text" [(ngModel)]="formData.pincode" class="form-control" placeholder="110001" />
+          </div>
+
+          <div class="col-12">
+            <label class="form-label fw-bold">Full Street Address *</label>
+            <input type="text" [(ngModel)]="formData.address" class="form-control" placeholder="Shop 12, Main Market Road" />
+          </div>
+
+          <div class="col-md-3">
+            <label class="form-label fw-bold">Delivery Time (min)</label>
+            <input type="number" [(ngModel)]="formData.deliveryTime" class="form-control" placeholder="30" />
+          </div>
+
+          <div class="col-md-3">
+            <label class="form-label fw-bold">Delivery Charge (₹)</label>
+            <input type="number" [(ngModel)]="formData.deliveryCharge" class="form-control" placeholder="30" />
+          </div>
+
+          <div class="col-md-3">
+            <label class="form-label fw-bold">Min Order (₹)</label>
+            <input type="number" [(ngModel)]="formData.minimumOrderAmount" class="form-control" placeholder="100" />
+          </div>
+
+          <div class="col-md-3">
+            <label class="form-label fw-bold">Cost for Two (₹)</label>
+            <input type="number" [(ngModel)]="formData.averageCostForTwo" class="form-control" placeholder="300" />
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-bold">Opening Time</label>
+            <input type="time" [(ngModel)]="formData.openingTime" class="form-control" />
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-bold">Closing Time</label>
+            <input type="time" [(ngModel)]="formData.closingTime" class="form-control" />
+          </div>
+
+          <div class="col-12">
+            <label class="form-label fw-bold">Restaurant Photo / Image (Optional)</label>
+            <div class="d-flex align-items-center gap-3 flex-wrap">
+              <div *ngIf="imagePreview" class="modal-img-preview-box">
+                <img [src]="imagePreview" (error)="onImgError($event)" alt="Restaurant Photo" class="modal-img-preview" />
+              </div>
+              <div class="flex-grow-1">
+                <div class="input-icon-field">
+                  <i class="fa-solid fa-cloud-arrow-up"></i>
+                  <input type="file" (change)="onFileSelected($event)" accept="image/*" class="form-control file-input-control" />
+                </div>
+                <div *ngIf="selectedFile" class="file-chosen-tag">
+                  <i class="fa-solid fa-circle-check text-success me-1"></i>
+                  <span class="file-name">{{ selectedFile.name }}</span>
+                  <button type="button" class="btn-clear-file" (click)="removeSelectedFile()"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <span class="text-muted small d-block mt-1">Upload a photo for this restaurant. A default image is assigned if left empty.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12 mt-2 d-flex gap-4">
+            <label class="checkbox-container">
+              <input type="checkbox" [(ngModel)]="formData.isOpen" />
+              <span class="checkmark"></span>
+              <span class="checkbox-text">Is Restaurant Open Now</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-box-footer">
+        <button class="btn btn-secondary" (click)="showModal = false">Cancel</button>
+        <button class="btn btn-primary" (click)="saveRestaurant()">
+          <i class="fa-solid fa-floppy-disk me-1"></i> {{ editingId === 0 ? 'Create Restaurant' : 'Save Changes' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Restaurant Modal -->
+  <div *ngIf="showDeleteModal" class="modal-overlay-backdrop">
+    <div class="modal-box-glass modal-box-sm border-danger">
+      <div class="modal-delete-content text-center p-4">
+        <div class="delete-icon-animated mb-3">
+          <i class="fa-solid fa-triangle-exclamation text-danger fa-3x"></i>
+        </div>
+        <h4 class="text-danger fw-bold mb-2">Delete Restaurant?</h4>
+        <p class="text-muted mb-3">
+          Are you sure you want to delete restaurant:
+          <br />
+          <strong class="text-dark fs-5">{{ resToDelete?.name }}</strong>?
+        </p>
+        <div class="alert alert-warning text-start small mb-4">
+          <i class="fa-solid fa-circle-info me-1"></i>
+          This will permanently remove this kitchen record and its menu bindings.
+        </div>
+        <div class="d-flex justify-content-center gap-3">
+          <button class="btn btn-secondary" (click)="showDeleteModal = false" [disabled]="isDeleting">Cancel</button>
+          <button class="btn btn-danger" (click)="confirmDelete()" [disabled]="isDeleting">
+            <span *ngIf="!isDeleting"><i class="fa-solid fa-trash-can me-1"></i> Yes, Delete</span>
+            <span *ngIf="isDeleting"><i class="fa-solid fa-spinner fa-spin me-1"></i> Deleting...</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

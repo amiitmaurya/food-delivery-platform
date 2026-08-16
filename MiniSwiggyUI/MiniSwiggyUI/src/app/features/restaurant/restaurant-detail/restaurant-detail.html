@@ -1,0 +1,237 @@
+<div class="restaurant-detail-page container">
+  <!-- Back Button & Header -->
+  <button class="back-btn mb-3" (click)="goBack()">
+    <i class="fa-solid fa-arrow-left me-2"></i> Back to Restaurants
+  </button>
+
+  <!-- Restaurant Banner Hero -->
+  <div *ngIf="restaurant" class="restaurant-hero-card glass-card">
+    <div class="hero-content">
+      <div class="title-row">
+        <h1 class="res-title">{{ restaurant.name }}</h1>
+        <div class="res-rating-badge">
+          <i class="fa-solid fa-star"></i>
+          <span>{{ restaurant.rating | number:'1.1-1' }}</span>
+        </div>
+      </div>
+
+      <p class="cuisines-list">{{ restaurant.cuisineType }}</p>
+      <p class="location-info">
+        <i class="fa-solid fa-location-dot me-1 text-primary"></i> 
+        {{ restaurant.address }}, {{ restaurant.city }}
+      </p>
+
+      <div class="meta-row mt-3">
+        <div class="meta-item">
+          <i class="fa-solid fa-motorcycle"></i>
+          <div>
+            <strong>{{ restaurant.deliveryTime || 30 }} mins</strong>
+            <span>Delivery Time</span>
+          </div>
+        </div>
+
+        <div class="meta-item">
+          <i class="fa-solid fa-wallet"></i>
+          <div>
+            <strong>₹{{ restaurant.averageCostForTwo || 300 }}</strong>
+            <span>Cost for two</span>
+          </div>
+        </div>
+
+        <div class="meta-item">
+          <i class="fa-solid fa-bag-shopping"></i>
+          <div>
+            <strong>₹{{ restaurant.minimumOrderAmount || 149 }}</strong>
+            <span>Min Order</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="hero-image-col">
+      <img [src]="formatImageUrl(restaurant.imageUrl)" (error)="onImgError($event, false)" [alt]="restaurant.name" class="hero-img" />
+    </div>
+  </div>
+
+  <!-- Filter & Search Bar for Dishes (Hidden for Delivery Partner) -->
+  <div *ngIf="!authService.isDeliveryPartner()" class="menu-filter-bar glass-card my-4">
+    <div class="search-dishes-box">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input 
+        type="text" 
+        [(ngModel)]="searchQuery" 
+        (ngModelChange)="applyFilters()"
+        placeholder="Search for dishes inside menu..." 
+      />
+    </div>
+
+    <div class="diet-pills">
+      <button class="diet-pill veg-pill" [class.active]="vegOnlyFilter" (click)="toggleVegFilter()">
+        <span class="food-symbol veg-symbol"></span> Veg Only
+      </button>
+
+      <button class="diet-pill nonveg-pill" [class.active]="nonVegOnlyFilter" (click)="toggleNonVegFilter()">
+        <span class="food-symbol nonveg-symbol"></span> Non-Veg
+      </button>
+    </div>
+  </div>
+
+  <!-- Menu Dishes Grid (Hidden for Delivery Partner) -->
+  <section *ngIf="!authService.isDeliveryPartner()" class="menu-section">
+    <h3 class="section-heading"><i class="fa-solid fa-utensils text-primary me-2"></i> Recommended Dishes ({{ filteredFoodItems.length }})</h3>
+
+    <div *ngIf="isLoading" class="p-4 text-center">
+      <i class="fa-solid fa-spinner fa-spin fa-2x text-primary"></i>
+      <p class="mt-2 text-muted">Loading delicious menu...</p>
+    </div>
+
+    <div *ngIf="!isLoading && filteredFoodItems.length === 0" class="glass-card p-5 text-center my-3">
+      <i class="fa-solid fa-plate-wheat fa-3x text-muted mb-2"></i>
+      <h4>No Dishes Found</h4>
+      <p class="text-muted">No menu items match your search or vegetarian filter.</p>
+    </div>
+
+    <div *ngIf="!isLoading && filteredFoodItems.length > 0" class="dishes-grid">
+      <div *ngFor="let food of filteredFoodItems" class="dish-card glass-card">
+        <div class="dish-info">
+          <div class="d-flex align-items-center gap-2 mb-1">
+            <span *ngIf="food.isVegetarian" class="food-symbol veg-symbol"></span>
+            <span *ngIf="!food.isVegetarian" class="food-symbol nonveg-symbol"></span>
+            <h4 class="dish-name">{{ food.name }}</h4>
+          </div>
+
+          <div class="dish-price-row">
+
+            <span *ngIf="food.offerPrice && food.offerPrice < food.price"
+                  class="dish-price">
+              ₹{{ food.offerPrice }}
+            </span>
+
+            <span *ngIf="food.offerPrice && food.offerPrice < food.price"
+                  class="original-price">
+              ₹{{ food.price }}
+            </span>
+
+            <span *ngIf="!food.offerPrice || food.offerPrice >= food.price"
+                  class="dish-price">
+              ₹{{ food.price }}
+            </span>
+
+          </div>
+
+          <p class="dish-desc">{{ food.description }}</p>
+        </div>
+
+        <div class="dish-action-col">
+          <img [src]="formatImageUrl(food.imageUrl || food.image)" (error)="onImgError($event, true)" [alt]="food.name" class="dish-img" />
+          
+          <!-- Add / Qty Controller Button (Hidden for Delivery Partner) -->
+          <div *ngIf="!authService.isDeliveryPartner()" class="add-btn-wrapper">
+            <button 
+              *ngIf="getQuantityInCart(food.id) === 0" 
+              class="btn btn-outline-primary add-btn"
+              (click)="addItem(food)"
+            >
+              ADD <i class="fa-solid fa-plus ms-1"></i>
+            </button>
+
+            <div *ngIf="getQuantityInCart(food.id) > 0" class="qty-control-btn">
+              <button (click)="decreaseQuantity(food)"><i class="fa-solid fa-minus"></i></button>
+              <span>{{ getQuantityInCart(food.id) }}</span>
+              <button (click)="increaseQuantity(food)"><i class="fa-solid fa-plus"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Customer Reviews & Ratings Section (Review Table Integration) -->
+  <section class="reviews-section my-5">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+      <h3><i class="fa-solid fa-star text-warning me-2"></i> Customer Reviews & Ratings ({{ reviews.length }})</h3>
+      <button class="btn btn-outline-primary btn-sm" (click)="openCreateReviewModal()">
+        <i class="fa-solid fa-pen me-1"></i> Write a Review
+      </button>
+    </div>
+
+    <div class="reviews-grid">
+      <div *ngFor="let rev of reviews" class="glass-card review-card p-3 mb-3">
+        <div class="review-header d-flex align-items-center justify-content-between mb-2">
+          <div class="reviewer-info d-flex align-items-center gap-2">
+            <img [src]="formatImageUrl(rev.userImageUrl, false)" (error)="onImgError($event, false)" class="table-thumb" style="width: 40px !important; height: 40px !important; border-radius: 50% !important;" alt="User" />
+            <div>
+              <strong class="reviewer-name d-block" style="font-size: 15px;">{{ rev.userName || 'Customer' }}</strong>
+              <small class="text-muted" style="font-size: 12px;">{{ (rev.createdOn || rev.createdAt) | date:'mediumDate' }}</small>
+            </div>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <div class="review-rating badge bg-success fs-6">
+              <i class="fa-solid fa-star text-warning me-1"></i> {{ rev.rating }}.0
+            </div>
+            <div *ngIf="canModifyReview(rev)" class="review-action-btns">
+              <button class="btn btn-sm btn-outline-primary py-0 px-2 ms-2" (click)="openEditReviewModal(rev)" title="Edit Review"><i class="fa-solid fa-pen"></i></button>
+              <button class="btn btn-sm btn-outline-danger py-0 px-2 ms-1" (click)="deleteReview(rev.id)" title="Delete Review"><i class="fa-solid fa-trash"></i></button>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="rev.foodImageUrl" class="reviewed-dish-img-wrapper my-2">
+          <img [src]="formatImageUrl(rev.foodImageUrl, true)" (error)="onImgError($event, true)" class="table-thumb" style="width: 48px !important; height: 48px !important; border-radius: 8px !important;" alt="Dish" />
+        </div>
+
+        <p class="review-comment mb-0 text-secondary" style="font-style: italic; font-size: 14px;">"{{ rev.comment }}"</p>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- Write Review Modal -->
+  <div *ngIf="showReviewModal" class="modal-backdrop">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Write a Review</h3>
+        <button class="modal-close-btn" (click)="showReviewModal = false"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="form-group mb-3">
+        <label class="form-label">Select Food Item *</label>
+
+        <select [(ngModel)]="newReview.foodItemId"
+                class="form-select">
+
+          <option [ngValue]="0">-- Select Food Item --</option>
+
+          <option *ngFor="let food of filteredFoodItems"
+                  [ngValue]="food.id">
+
+            {{ food.name }}
+
+          </option>
+
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Rating (1 to 5 Stars) *</label>
+        <select [(ngModel)]="newReview.rating" class="form-select">
+          <option value="5">★★★★★ (5 - Excellent)</option>
+          <option value="4">★★★★☆ (4 - Good)</option>
+          <option value="3">★★★☆☆ (3 - Average)</option>
+          <option value="2">★★☆☆☆ (2 - Poor)</option>
+          <option value="1">★☆☆☆☆ (1 - Terrible)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Your Review / Feedback *</label>
+        <textarea [(ngModel)]="newReview.comment" class="form-control" rows="3" placeholder="Share details of your food experience..."></textarea>
+      </div>
+
+      <div class="modal-footer mt-3">
+        <button class="btn btn-secondary me-2" (click)="showReviewModal = false">Cancel</button>
+        <button class="btn btn-primary" (click)="submitReview()">Submit Review</button>
+      </div>
+    </div>
+  </div>
+</div>

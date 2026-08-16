@@ -1,0 +1,203 @@
+/* Review Master Styles */
+.review-master-container {
+  padding: 1.5rem 1rem 3rem;
+  max-width: 1320px;
+  margin: 0 auto;
+}
+
+.page-header-card {
+  padding: 1.5rem 2rem;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+}
+
+.header-pill-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #d97706;
+  background: rgba(245, 158, 11, 0.12);
+  padding: 0.35rem 0.85rem;
+  border-radius: 50px;
+  margin-bottom: 0.5rem;
+  border: 1px solid rgba(245, 158, 11, 0.25);
+}
+
+.page-title {
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 0.3rem;
+  letter-spacing: -0.02em;
+}
+
+.page-subtitle {
+  font-size: 0.94rem;
+  color: #64748b;
+  margin-bottom: 0;
+}
+
+/* Toolbar */
+.filter-toolbar-card {
+  background: #ffffff;
+  border-radius: 18px;
+  border: 1px solid #e2e8f0;
+  padding: 1rem 1.25rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+
+.toolbar-flex-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.toolbar-search-box {
+  flex: 1 1 320px;
+  position: relative;
+}
+
+.search-leading-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+
+.toolbar-search-input {
+  padding-left: 2.75rem;
+  padding-right: 2.5rem;
+  border-radius: 12px;
+  border: 1.5px solid #cbd5e1;
+  padding-top: 0.6rem;
+  padding-bottom: 0.6rem;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.toolbar-search-input:focus {
+  border-color: #ff5200;
+  box-shadow: 0 0 0 3px rgba(255, 82, 0, 0.15);
+}
+
+.search-clear-btn {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 0.25rem;
+}
+
+.toolbar-pills-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.filter-pill-btn {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 50px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.45rem 0.9rem;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filter-pill-btn:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.filter-pill-btn.pill-active {
+  background: #0f172a;
+  color: #ffffff;
+  border-color: #0f172a;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.25);
+}
+
+/* Review Cards */
+.review-modern-card {
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  transition: transform 0.2s ease;
+}
+
+.review-modern-card:hover {
+  transform: translateY(-3px);
+}
+
+.user-avatar-sm {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff6b2b, #ff5200);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1rem;
+  box-shadow: 0 2px 8px rgba(255, 82, 0, 0.25);
+}
+
+.user-name-text {
+  color: #0f172a;
+  font-size: 0.95rem;
+}
+
+.review-comment-text {
+  font-style: italic;
+  line-height: 1.5;
+  color: #475569;
+}
+
+/* Modals */
+.modal-overlay-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(5px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.modal-box-glass {
+  background: #ffffff;
+  border-radius: 22px;
+  width: 100%;
+  max-width: 600px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+  animation: modalScaleIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-box-sm { max-width: 460px; }
+
+@keyframes modalScaleIn {
+  from { opacity: 0; transform: scale(0.95) translateY(12px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}

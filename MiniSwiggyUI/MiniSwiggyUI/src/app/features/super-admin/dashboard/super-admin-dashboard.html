@@ -1,0 +1,251 @@
+<div class="superadmin-dashboard-container container-fluid px-lg-4 py-3">
+  <!-- Top Header Card (Clean White Theme like Role Master & User Master) -->
+  <div class="page-header-card glass-card mb-4">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+      <div>
+        <div class="header-pill-badge">
+          <i class="fa-solid fa-crown text-warning me-1"></i> Super Admin Master Command Center
+        </div>
+        <h2 class="page-title">Platform Overview & Master Controls</h2>
+        <p class="page-subtitle">
+          Real-time analytics, user distribution, and centralized management for all system master modules.
+        </p>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <a routerLink="/superadmin/users" class="btn btn-primary btn-add-glow">
+          <i class="fa-solid fa-users-gear me-2"></i> User Master
+        </a>
+        <a routerLink="/admin/restaurants" class="btn btn-outline-secondary btn-header-outline">
+          <i class="fa-solid fa-store me-2"></i> Restaurant Master
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Primary KPIs Grid -->
+  <div class="kpi-metrics-row mb-4">
+    <!-- Revenue -->
+    <div class="glass-card metric-box">
+      <div class="metric-icon-box bg-flame-light text-flame">
+        <i class="fa-solid fa-indian-rupee-sign"></i>
+      </div>
+      <div class="metric-info-col">
+        <span class="metric-title-label">Total Revenue</span>
+        <h3 class="metric-number-val">₹{{ totalRevenue | number:'1.0-2' }}</h3>
+        <span class="metric-badge-trend text-success"><i class="fa-solid fa-arrow-trend-up me-1"></i>Platform Gross</span>
+      </div>
+    </div>
+
+    <!-- Users -->
+    <div class="glass-card metric-box">
+      <div class="metric-icon-box bg-sapphire-light text-sapphire">
+        <i class="fa-solid fa-users"></i>
+      </div>
+      <div class="metric-info-col">
+        <span class="metric-title-label">Total Platform Users</span>
+        <h3 class="metric-number-val">{{ userStats.totalUsers }}</h3>
+        <span class="metric-sub-note">{{ userStats.totalCustomers }} Customers | {{ userStats.totalAdmins }} Admins</span>
+      </div>
+    </div>
+
+    <!-- Restaurants -->
+    <div class="glass-card metric-box">
+      <div class="metric-icon-box bg-emerald-light text-emerald">
+        <i class="fa-solid fa-store"></i>
+      </div>
+      <div class="metric-info-col">
+        <span class="metric-title-label">Partner Restaurants</span>
+        <h3 class="metric-number-val">{{ totalRestaurants }}</h3>
+        <span class="metric-sub-note"><i class="fa-solid fa-circle-check text-success me-1"></i>Active Kitchens</span>
+      </div>
+    </div>
+
+    <!-- Food Items -->
+    <div class="glass-card metric-box">
+      <div class="metric-icon-box bg-violet-light text-violet">
+        <i class="fa-solid fa-burger"></i>
+      </div>
+      <div class="metric-info-col">
+        <span class="metric-title-label">Menu Food Dishes</span>
+        <h3 class="metric-number-val">{{ totalFoodItems }}</h3>
+        <span class="metric-sub-note">{{ totalCategories }} Categories Active</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Master Hub Directory Section -->
+  <div class="master-hub-section mb-4">
+    <div class="section-title-wrap mb-3">
+      <h4 class="section-heading"><span class="accent-dot"></span> System Master Directory & Controls</h4>
+      <p class="section-subtext text-muted mb-0">Every module has full Add, Edit, and Delete modes with instant database sync.</p>
+    </div>
+
+    <div class="masters-tile-grid">
+      <!-- 1. User Master -->
+      <a routerLink="/superadmin/users" class="glass-card master-tile-card">
+        <div class="tile-icon-box bg-gold-light text-gold">
+          <i class="fa-solid fa-users-gear"></i>
+        </div>
+        <div class="tile-body">
+          <h5 class="tile-title">User Master</h5>
+          <p class="tile-desc">Manage all users, roles, active flags, and reset passwords.</p>
+        </div>
+        <div class="tile-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+      </a>
+
+      <!-- 2. Role Master -->
+      <a routerLink="/superadmin/roles" class="glass-card master-tile-card">
+        <div class="tile-icon-box bg-sapphire-light text-sapphire">
+          <i class="fa-solid fa-shield-halved"></i>
+        </div>
+        <div class="tile-body">
+          <h5 class="tile-title">Role Master</h5>
+          <p class="tile-desc">SuperAdmin, Admin, Customer, and Rider permissions.</p>
+        </div>
+        <div class="tile-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+      </a>
+
+      <!-- 3. Restaurant Master -->
+      <a routerLink="/admin/restaurants" class="glass-card master-tile-card">
+        <div class="tile-icon-box bg-emerald-light text-emerald">
+          <i class="fa-solid fa-store"></i>
+        </div>
+        <div class="tile-body">
+          <h5 class="tile-title">Restaurant Master</h5>
+          <p class="tile-desc">Manage partner kitchens, delivery charges, and timing.</p>
+        </div>
+        <div class="tile-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+      </a>
+
+      <!-- 4. Category Master -->
+      <a routerLink="/admin/categories" class="glass-card master-tile-card">
+        <div class="tile-icon-box bg-violet-light text-violet">
+          <i class="fa-solid fa-layer-group"></i>
+        </div>
+        <div class="tile-body">
+          <h5 class="tile-title">Category Master</h5>
+          <p class="tile-desc">Cuisine groupings (Biryani, Pizza, Rolls, Desserts).</p>
+        </div>
+        <div class="tile-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+      </a>
+
+      <!-- 5. Food Item Master -->
+      <a routerLink="/admin/food-item" class="glass-card master-tile-card">
+        <div class="tile-icon-box bg-flame-light text-flame">
+          <i class="fa-solid fa-bowl-food"></i>
+        </div>
+        <div class="tile-body">
+          <h5 class="tile-title">Food Item Master</h5>
+          <p class="tile-desc">Menu items, price, veg/non-veg tags, and in-stock toggles.</p>
+        </div>
+        <div class="tile-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+      </a>
+
+      <!-- 6. Coupon Master -->
+      <a routerLink="/admin/coupons" class="glass-card master-tile-card">
+        <div class="tile-icon-box bg-flame-light text-flame">
+          <i class="fa-solid fa-ticket"></i>
+        </div>
+        <div class="tile-body">
+          <h5 class="tile-title">Coupon & Promo Master</h5>
+          <p class="tile-desc">Discount codes, cashback percentages, and max caps.</p>
+        </div>
+        <div class="tile-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+      </a>
+
+      <!-- 7. Delivery Partner Fleet Master -->
+      <a routerLink="/superadmin/delivery-partners" class="glass-card master-tile-card">
+        <div class="tile-icon-box bg-sapphire-light text-sapphire">
+          <i class="fa-solid fa-person-biking"></i>
+        </div>
+        <div class="tile-body">
+          <h5 class="tile-title">Delivery Fleet Master</h5>
+          <p class="tile-desc">On-duty riders, vehicle numbers, driving licenses, and banking.</p>
+        </div>
+        <div class="tile-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+      </a>
+
+      <!-- 8. Review & Rating Master -->
+      <a routerLink="/superadmin/reviews" class="glass-card master-tile-card">
+        <div class="tile-icon-box bg-gold-light text-gold">
+          <i class="fa-solid fa-comments"></i>
+        </div>
+        <div class="tile-body">
+          <h5 class="tile-title">Review & Ratings Master</h5>
+          <p class="tile-desc">Customer ratings, star filters, and feedback moderation.</p>
+        </div>
+        <div class="tile-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+      </a>
+
+      <!-- 9. User Module Access Master -->
+      <a routerLink="/superadmin/permissions" class="glass-card master-tile-card">
+        <div class="tile-icon-box bg-emerald-light text-emerald">
+          <i class="fa-solid fa-key"></i>
+        </div>
+        <div class="tile-body">
+          <h5 class="tile-title">Module Access Master</h5>
+          <p class="tile-desc">Configure and toggle which sidebar modules each user can access.</p>
+        </div>
+        <div class="tile-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+      </a>
+    </div>
+  </div>
+
+  <!-- Recent Orders Table Section -->
+  <div class="recent-orders-section">
+    <div class="glass-card p-4 user-table-card">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+          <h4 class="mb-0 fw-bold"><i class="fa-solid fa-receipt text-primary me-2"></i> Recent Platform Orders</h4>
+          <span class="text-muted small">Live customer orders across all kitchen partners</span>
+        </div>
+        <a routerLink="/admin/orders" class="btn btn-sm btn-outline-primary">
+          <i class="fa-solid fa-arrow-up-right-from-square me-1"></i> Full Order Book
+        </a>
+      </div>
+
+      <div class="table-responsive" *ngIf="recentOrders.length > 0">
+        <table class="table custom-unified-table align-middle mb-0">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Customer</th>
+              <th>Date</th>
+              <th>Customer Address</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th class="text-end">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let order of recentOrders">
+              <td><strong>#ORD-{{ order.id }}</strong></td>
+              <td>
+                <span class="fw-bold text-dark">{{ order.userName || 'Customer' }}</span>
+              </td>
+              <td class="text-muted small">{{ order.orderDate | date:'dd MMM, h:mm a' }}</td>
+              <td class="text-muted small text-truncate" style="max-width: 180px;">{{ order.deliveryAddress }}</td>
+              <td><strong class="text-dark">₹{{ order.finalAmount || order.totalAmount }}</strong></td>
+              <td>
+                <span class="badge" [ngClass]="{
+                  'bg-success': order.status === 'Delivered',
+                  'bg-warning text-dark': order.status === 'Preparing' || order.status === 'Placed' || order.status === 'Confirmed',
+                  'bg-info': order.status === 'Out for Delivery',
+                  'bg-danger': order.status === 'Cancelled'
+                }">{{ order.status }}</span>
+              </td>
+              <td class="text-end">
+                <a [routerLink]="['/admin/orders']" class="btn btn-sm btn-light border">View</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div *ngIf="recentOrders.length === 0" class="text-center py-4 text-muted">
+        <i class="fa-solid fa-bag-shopping fa-2x mb-2 text-muted"></i>
+        <p class="mb-0">No recent orders yet placed on the platform.</p>
+      </div>
+    </div>
+  </div>
+</div>

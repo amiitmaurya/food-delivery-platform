@@ -1,0 +1,146 @@
+<div class="admin-dashboard-page container">
+  <div class="dashboard-header">
+    <div>
+      <h2><i class="fa-solid fa-chart-pie me-2 text-primary"></i> Admin Dashboard</h2>
+      <p>Welcome back! Overview of MiniSwiggy platform metrics and orders.</p>
+    </div>
+    <div class="quick-actions">
+      <a routerLink="/admin/restaurants" class="btn btn-primary me-2"><i class="fa-solid fa-plus"></i> Add Restaurant</a>
+      <a routerLink="/food-item" class="btn btn-outline-primary"><i class="fa-solid fa-plus"></i> Add Food Item</a>
+    </div>
+  </div>
+
+  <!-- Metric Cards Grid -->
+  <div class="stats-grid">
+    <div class="stat-card glass-card">
+      <div class="stat-icon bg-orange">
+        <i class="fa-solid fa-indian-rupee-sign"></i>
+      </div>
+      <div class="stat-info">
+        <span class="stat-label">Total Revenue</span>
+        <h3 class="stat-val">₹{{ totalRevenue | number }}</h3>
+        <span class="stat-trend text-success"><i class="fa-solid fa-arrow-trend-up"></i> +12.5% this week</span>
+      </div>
+    </div>
+
+    <div class="stat-card glass-card">
+      <div class="stat-icon bg-blue">
+        <i class="fa-solid fa-utensils"></i>
+      </div>
+      <div class="stat-info">
+        <span class="stat-label">Active Restaurants</span>
+        <h3 class="stat-val">{{ totalRestaurants }}</h3>
+        <span class="stat-sub">Partners registered</span>
+      </div>
+    </div>
+
+    <div class="stat-card glass-card">
+      <div class="stat-icon bg-green">
+        <i class="fa-solid fa-burger"></i>
+      </div>
+      <div class="stat-info">
+        <span class="stat-label">Total Food Items</span>
+        <h3 class="stat-val">{{ totalFoodItems }}</h3>
+        <span class="stat-sub">Active menu items</span>
+      </div>
+    </div>
+
+    <div class="stat-card glass-card">
+      <div class="stat-icon bg-purple">
+        <i class="fa-solid fa-layer-group"></i>
+      </div>
+      <div class="stat-info">
+        <span class="stat-label">Food Categories</span>
+        <h3 class="stat-val">{{ totalCategories }}</h3>
+        <span class="stat-sub">Cuisines categorized</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Management Links & Recent Orders -->
+  <div class="dashboard-content-grid">
+    <!-- Recent Orders Table -->
+    <div class="glass-card recent-orders-card">
+      <div class="card-header-flex">
+        <h3>Recent Platform Orders</h3>
+        <a routerLink="/admin/orders" class="btn btn-secondary btn-sm">View All</a>
+      </div>
+
+      <div class="table-responsive">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Customer</th>
+              <th>Date</th>
+              <th>Address</th>
+              <th>Amount</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let order of recentOrders">
+              <td><strong>#{{ order.id }}</strong></td>
+              <td>
+                <div class="d-flex align-items-center gap-2">
+                  <span class="fw-bold text-dark">{{ order.userName || 'Customer' }}</span>
+                  <span class="text-muted small" *ngIf="order.userPhone || order.phoneNumber">({{ order.userPhone || order.phoneNumber }})</span>
+                </div>
+              </td>
+              <td>{{ order.orderDate | date:'shortTime' }}</td>
+              <td>{{ order.deliveryAddress }}</td>
+              <td><strong>₹{{ order.totalAmount }}</strong></td>
+              <td>
+                <span class="badge" [class.badge-warning]="order.status !== 'Delivered'" [class.badge-success]="order.status === 'Delivered'">
+                  {{ order.status }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Quick Shortcuts Card -->
+    <div class="glass-card shortcuts-card">
+      <h3>Quick Management</h3>
+      <div class="shortcuts-list">
+        <a routerLink="/admin/restaurants" class="shortcut-item">
+          <i class="fa-solid fa-store icon"></i>
+          <div>
+            <strong>Manage Restaurants</strong>
+            <p>Add, edit or toggle open status</p>
+          </div>
+          <i class="fa-solid fa-chevron-right arrow"></i>
+        </a>
+
+        <a routerLink="/categories" class="shortcut-item">
+          <i class="fa-solid fa-layer-group icon"></i>
+          <div>
+            <strong>Manage Categories</strong>
+            <p>Add Biryani, Pizza, Desserts...</p>
+          </div>
+          <i class="fa-solid fa-chevron-right arrow"></i>
+        </a>
+
+        <a routerLink="/food-item" class="shortcut-item">
+          <i class="fa-solid fa-burger icon"></i>
+          <div>
+            <strong>Manage Dishes</strong>
+            <p>Update prices, upload images</p>
+          </div>
+          <i class="fa-solid fa-chevron-right arrow"></i>
+        </a>
+
+        <a routerLink="/admin/orders" class="shortcut-item">
+          <i class="fa-solid fa-boxes-packing icon"></i>
+          <div>
+            <strong>Order Status Manager</strong>
+            <p>Update live status of orders</p>
+          </div>
+          <i class="fa-solid fa-chevron-right arrow"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,67 @@
+<div class="earnings-container">
+  <div class="header-section">
+    <h2><i class="fa-solid fa-wallet"></i> Earnings Overview</h2>
+    <p>Track your daily, weekly, monthly, and lifetime delivery payouts.</p>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-state">
+    <i class="fa-solid fa-spinner fa-spin"></i> Loading earnings data...
+  </div>
+
+  <div *ngIf="!isLoading" class="earnings-content">
+    <!-- Earnings Cards Grid -->
+    <div class="earnings-grid">
+      <div class="earn-card today">
+        <span class="label">Today's Earnings</span>
+        <h3 class="amount">₹{{ earnings?.todayEarnings || 0 }}</h3>
+        <p class="meta">{{ earnings?.todayDeliveriesCount || 0 }} deliveries today</p>
+      </div>
+
+      <div class="earn-card week">
+        <span class="label">Weekly Earnings</span>
+        <h3 class="amount">₹{{ earnings?.weeklyEarnings || 0 }}</h3>
+        <p class="meta">Current week total</p>
+      </div>
+
+      <div class="earn-card month">
+        <span class="label">Monthly Earnings</span>
+        <h3 class="amount">₹{{ earnings?.monthlyEarnings || 0 }}</h3>
+        <p class="meta">Current month total</p>
+      </div>
+
+      <div class="earn-card total">
+        <span class="label">Total Earnings</span>
+        <h3 class="amount">₹{{ earnings?.totalEarnings || 0 }}</h3>
+        <p class="meta">{{ earnings?.totalDeliveriesCount || 0 }} total completed</p>
+      </div>
+    </div>
+
+    <!-- Payout Details -->
+    <div class="payout-section">
+      <div class="section-header">
+        <h3><i class="fa-solid fa-file-invoice-dollar"></i> Recent Payout Transactions</h3>
+      </div>
+
+      <div class="table-card">
+        <table class="payout-table">
+          <thead>
+            <tr>
+              <th>Ref No</th>
+              <th>Date</th>
+              <th>Payout Amount</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let payout of earnings?.recentPayouts">
+              <td><strong>{{ payout.referenceNumber }}</strong></td>
+              <td>{{ payout.date }}</td>
+              <td class="amount-text">₹{{ payout.amount }}</td>
+              <td><span class="badge-success">{{ payout.status }}</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

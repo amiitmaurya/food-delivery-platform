@@ -1,0 +1,159 @@
+<div class="active-delivery-container">
+  <div class="header-section">
+    <h2><i class="fa-solid fa-person-biking"></i> Active Delivery</h2>
+    <p>Track live delivery progress and execute sequential status updates.</p>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-box">
+    <i class="fa-solid fa-spinner fa-spin"></i> Loading active order...
+  </div>
+
+  <div *ngIf="!isLoading && !activeOrder" class="no-active-box">
+    <i class="fa-solid fa-circle-check"></i>
+    <h3>No Active Delivery Task</h3>
+    <p>You have completed all active deliveries. Check your assigned orders for next tasks.</p>
+    <a routerLink="/delivery-partner/assigned-orders" class="btn btn-primary">Check Assigned Orders</a>
+  </div>
+
+  <div *ngIf="!isLoading && activeOrder" class="delivery-tracker-card">
+    <div class="tracker-header">
+      <div>
+        <span class="order-id">Order #{{ activeOrder.orderNumber }}</span>
+        <p class="order-date">Date: {{ activeOrder.orderDate | date:'medium' }}</p>
+      </div>
+      <span class="status-pill">{{ activeOrder.status }}</span>
+    </div>
+
+    <!-- Step Progress Stepper Bar -->
+    <div class="stepper-bar">
+      <div class="step" [ngClass]="getStepState('Assigned')">
+        <div class="circle"><i class="fa-solid fa-file-signature"></i></div>
+        <span class="step-label">Assigned</span>
+      </div>
+
+      <div class="line" [class.filled]="getStepState('Accepted') !== 'pending'"></div>
+
+      <div class="step" [ngClass]="getStepState('Accepted')">
+        <div class="circle"><i class="fa-solid fa-circle-check"></i></div>
+        <span class="step-label">Accepted</span>
+      </div>
+
+      <div class="line" [class.filled]="getStepState('ReachedRestaurant') !== 'pending'"></div>
+
+      <div class="step" [ngClass]="getStepState('ReachedRestaurant')">
+        <div class="circle"><i class="fa-solid fa-store"></i></div>
+        <span class="step-label">Reached Restaurant</span>
+      </div>
+
+      <div class="line" [class.filled]="getStepState('PickedUp') !== 'pending'"></div>
+
+      <div class="step" [ngClass]="getStepState('PickedUp')">
+        <div class="circle"><i class="fa-solid fa-bag-shopping"></i></div>
+        <span class="step-label">Picked Up</span>
+      </div>
+
+      <div class="line" [class.filled]="getStepState('OutForDelivery') !== 'pending'"></div>
+
+      <div class="step" [ngClass]="getStepState('OutForDelivery')">
+        <div class="circle"><i class="fa-solid fa-person-biking"></i></div>
+        <span class="step-label">Out For Delivery</span>
+      </div>
+
+      <div class="line" [class.filled]="getStepState('Delivered') !== 'pending'"></div>
+
+      <div class="step" [ngClass]="getStepState('Delivered')">
+        <div class="circle"><i class="fa-solid fa-flag-checkered"></i></div>
+        <span class="step-label">Delivered</span>
+      </div>
+    </div>
+
+    <!-- Location & Action Section -->
+    <div class="tracker-grid">
+      <!-- Pickup Card -->
+      <div class="location-card pickup-card">
+        <div class="card-icon"><i class="fa-solid fa-store"></i></div>
+        <div class="card-info">
+          <label>STEP 1: PICKUP FROM RESTAURANT</label>
+          <h3>{{ activeOrder.restaurantName }}</h3>
+          <p><i class="fa-solid fa-location-dot"></i> {{ activeOrder.restaurantAddress }}</p>
+          <p><i class="fa-solid fa-phone"></i> {{ activeOrder.restaurantPhone }}</p>
+
+          <button class="btn btn-outline-nav" (click)="openNavigationMap(activeOrder.restaurantAddress)">
+            <i class="fa-solid fa-map-location-dot"></i> Navigate to Restaurant
+          </button>
+        </div>
+      </div>
+
+      <!-- Dropoff Card -->
+      <div class="location-card drop-card">
+        <div class="card-icon"><i class="fa-solid fa-house-user"></i></div>
+        <div class="card-info">
+          <label>STEP 2: DELIVER TO CUSTOMER</label>
+          <h3>{{ activeOrder.customerName }}</h3>
+          <p><i class="fa-solid fa-location-dot"></i> {{ activeOrder.deliveryAddress }}</p>
+          <p><i class="fa-solid fa-phone"></i> {{ activeOrder.customerPhone }}</p>
+
+          <button class="btn btn-outline-nav" (click)="openNavigationMap(activeOrder.deliveryAddress)">
+            <i class="fa-solid fa-map-location-dot"></i> Navigate to Customer
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Items Summary -->
+    <div class="items-summary-card">
+      <h4><i class="fa-solid fa-utensils"></i> Order Items ({{ activeOrder.items.length }})</h4>
+      <div class="items-flex">
+        <div *ngFor="let item of activeOrder.items" class="item-tag">
+          {{ item.quantity }}x {{ item.foodItemName }} (₹{{ item.price }})
+        </div>
+      </div>
+    </div>
+
+    <!-- Sequential Status Action Controls -->
+    <div class="sequential-action-bar">
+      <h4>Execute Next Action (Sequential):</h4>
+
+      <div class="action-buttons">
+        <button *ngIf="activeOrder.status === 'Assigned' || activeOrder.status === 'Pending' || activeOrder.status === 'Confirmed'"
+                class="btn btn-action btn-accept"
+                [disabled]="isUpdating"
+                (click)="acceptOrder()">
+          <i class="fa-solid fa-check"></i> Accept Delivery Order
+        </button>
+
+        <button *ngIf="activeOrder.status === 'Accepted'"
+                class="btn btn-action"
+                [disabled]="isUpdating"
+                (click)="markReachedRestaurant()">
+          <i class="fa-solid fa-location-crosshairs"></i> Mark as Reached Restaurant
+        </button>
+
+        <button *ngIf="activeOrder.status === 'ReachedRestaurant'"
+                class="btn btn-action"
+                [disabled]="isUpdating"
+                (click)="markPickedUp()">
+          <i class="fa-solid fa-bag-shopping"></i> Mark as Picked Up
+        </button>
+
+        <button *ngIf="activeOrder.status === 'PickedUp'"
+                class="btn btn-action"
+                [disabled]="isUpdating"
+                (click)="markOutForDelivery()">
+          <i class="fa-solid fa-motorcycle"></i> Mark as Out for Delivery
+        </button>
+
+        <button *ngIf="activeOrder.status === 'OutForDelivery'"
+                class="btn btn-action btn-success-delivered"
+                [disabled]="isUpdating"
+                (click)="markDelivered()">
+          <i class="fa-solid fa-check-double"></i> Mark as Delivered
+        </button>
+
+        <span *ngIf="activeOrder.status === 'Delivered'" class="complete-message">
+          <i class="fa-solid fa-circle-check"></i> Order Delivered Successfully!
+        </span>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,434 @@
+<div class="profile-container">
+  <div class="header-section mb-4">
+    <h2><i class="fa-solid fa-id-card text-primary me-2"></i> Delivery Partner Master Management</h2>
+    <p class="text-muted">Manage, edit, update, or clear your 4 profile masters with instant real-time database sync.</p>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-state glass-card p-4 text-center">
+    <i class="fa-solid fa-spinner fa-spin text-primary fa-2x me-2"></i> Loading profile master details...
+  </div>
+
+  <div *ngIf="!isLoading" class="profile-layout">
+    <!-- Tabs Navigation Sidebar (4 Master Tabs) -->
+    <div class="tabs-nav">
+      <button [class.active]="activeTab === 'profile'" (click)="activeTab = 'profile'">
+        <i class="fa-solid fa-user me-2"></i> Personal Info Master
+      </button>
+
+      <button [class.active]="activeTab === 'vehicle'" (click)="activeTab = 'vehicle'">
+        <i class="fa-solid fa-motorcycle me-2"></i> Vehicle Master
+      </button>
+
+      <button [class.active]="activeTab === 'license'" (click)="activeTab = 'license'">
+        <i class="fa-solid fa-address-card me-2"></i> License Master
+      </button>
+
+      <button [class.active]="activeTab === 'bank'" (click)="activeTab = 'bank'">
+        <i class="fa-solid fa-building-columns me-2"></i> Bank & Payout Master
+      </button>
+    </div>
+
+    <!-- Right Content Card Area -->
+    <div class="form-card glass-card p-4">
+
+      <!-- ==================== TAB 1: PERSONAL INFO MASTER (Users Table Data) ==================== -->
+      <div *ngIf="activeTab === 'profile'">
+        <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-4">
+          <h3 class="m-0"><i class="fa-solid fa-user text-primary me-2"></i> Personal Info Master (User Account Table)</h3>
+          <div class="action-buttons">
+            <button *ngIf="!editMode['profile']" class="btn btn-outline-primary" (click)="toggleEdit('profile', true)">
+              <i class="fa-solid fa-pen-to-square me-1"></i> Edit Info
+            </button>
+            <button *ngIf="editMode['profile']" class="btn btn-outline-secondary" (click)="toggleEdit('profile', false)">
+              <i class="fa-solid fa-xmark me-1"></i> Cancel
+            </button>
+          </div>
+        </div>
+
+        <!-- Profile Avatar Header Block -->
+        <div class="avatar-card p-3 mb-4 rounded-3 bg-white border d-flex align-items-center gap-3">
+          <div class="profile-avatar-box position-relative">
+            <img [src]="profileForm.profileImageUrl || profile?.profileImageUrl || defaultAvatar" (error)="onAvatarError($event)" alt="Delivery Partner DP" class="profile-avatar-img rounded-circle border shadow-sm" width="90" height="90" style="object-fit: cover;" />
+          </div>
+          <div>
+            <h5 class="mb-1 fw-bold">{{ profileForm.fullName || profile?.fullName || 'Delivery Partner' }}</h5>
+            <p class="text-muted small mb-2"><i class="fa-solid fa-camera text-primary me-1"></i> Profile Picture Master</p>
+            <label class="btn btn-sm btn-outline-primary me-2 cursor-pointer mb-0">
+              <i class="fa-solid fa-upload me-1"></i> Change Photo
+              <input type="file" accept="image/*" (change)="onFileSelected($event)" class="d-none" />
+            </label>
+            <button *ngIf="profileForm.profileImageUrl" type="button" class="btn btn-sm btn-outline-danger" (click)="removeProfilePicture()">
+              <i class="fa-solid fa-trash me-1"></i> Remove
+            </button>
+          </div>
+        </div>
+
+        <!-- Card View Mode -->
+        <div *ngIf="!editMode['profile']" class="master-details-card p-4 rounded-3 bg-light border">
+          <div class="detail-row mb-3">
+            <span class="detail-label text-muted"><i class="fa-solid fa-signature text-secondary me-2"></i> Registered Full Name:</span>
+            <span class="detail-value fw-bold text-dark fs-5">{{ profileForm.fullName || profile?.fullName || 'Delivery Partner' }}</span>
+          </div>
+          <div class="detail-row mb-3">
+            <span class="detail-label text-muted"><i class="fa-solid fa-envelope text-secondary me-2"></i> Registered Email:</span>
+            <span class="detail-value text-dark">{{ profile?.email || 'delivery@miniswiggy.com' }}</span>
+          </div>
+          <div class="detail-row mb-3">
+            <span class="detail-label text-muted"><i class="fa-solid fa-phone text-secondary me-2"></i> Registered Phone Number:</span>
+            <span class="detail-value text-dark">{{ profileForm.phoneNumber || profile?.phoneNumber || '+91 9876543210' }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label text-muted"><i class="fa-solid fa-shield text-secondary me-2"></i> Account Role:</span>
+            <span class="badge bg-success text-white px-3 py-2">Delivery Partner Active</span>
+          </div>
+
+          <div class="mt-4 pt-3 border-top d-flex gap-2">
+            <button class="btn btn-primary" (click)="toggleEdit('profile', true)">
+              <i class="fa-solid fa-pen me-1"></i> Update Personal Info
+            </button>
+          </div>
+        </div>
+
+        <!-- Edit Form Mode -->
+        <form *ngIf="editMode['profile']" (ngSubmit)="saveProfileSection('Personal Info', 'profile')">
+          <div class="form-group mb-3">
+            <label class="form-label fw-semibold"><i class="fa-solid fa-image text-primary me-1"></i> Profile Image (Upload or Paste URL)</label>
+            <div class="d-flex align-items-center gap-3 mb-2">
+              <img [src]="profileForm.profileImageUrl || defaultAvatar" (error)="onAvatarError($event)" class="rounded-circle border shadow-sm" width="60" height="60" style="object-fit: cover;" />
+              <label class="btn btn-outline-primary mb-0">
+                <i class="fa-solid fa-upload me-1"></i> Choose Computer File
+                <input type="file" accept="image/*" (change)="onFileSelected($event)" class="d-none" />
+              </label>
+            </div>
+            <input type="text" [(ngModel)]="profileForm.profileImageUrl" name="profileImageUrl" class="form-control mb-1" placeholder="Or paste Image URL (e.g. https://...)" />
+            <small class="text-muted">Choose a photo from your computer or paste an image URL.</small>
+          </div>
+
+          <div class="form-group mb-3">
+            <label class="form-label fw-semibold">Full Name</label>
+            <input type="text" [(ngModel)]="profileForm.fullName" name="fullName" class="form-control" required />
+          </div>
+
+          <div class="form-group mb-3">
+            <label class="form-label fw-semibold">Email Address (Registered Account)</label>
+            <input type="email" [value]="profile?.email || 'delivery@miniswiggy.com'" class="form-control bg-light" disabled />
+          </div>
+
+          <div class="form-group mb-3">
+            <label class="form-label fw-semibold">Phone Number</label>
+            <div class="input-phone-container">
+              <span class="input-phone-prefix">+91</span>
+              <input 
+                type="tel" 
+                [(ngModel)]="profileForm.phoneNumber" 
+                name="phoneNumber" 
+                class="form-control" 
+                placeholder="9876543210" 
+                maxlength="10"
+                inputmode="numeric"
+                (keypress)="onlyNumbers($event)"
+                (input)="onPhoneInput($event)"
+                required 
+              />
+            </div>
+          </div>
+
+          <div class="d-flex gap-2 mt-4">
+            <button type="submit" class="btn btn-success" [disabled]="isSaving">
+              <i class="fa-solid fa-check me-1"></i> Save Personal Details
+            </button>
+            <button type="button" class="btn btn-light" (click)="toggleEdit('profile', false)">Cancel</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- ==================== TAB 2: VEHICLE MASTER (AB12CD3456 Format) ==================== -->
+      <div *ngIf="activeTab === 'vehicle'">
+        <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-4">
+          <h3 class="m-0"><i class="fa-solid fa-motorcycle text-primary me-2"></i> Vehicle Master</h3>
+          <div class="action-buttons">
+            <button *ngIf="!editMode['vehicle']" class="btn btn-outline-primary me-2" (click)="toggleEdit('vehicle', true)">
+              <i class="fa-solid fa-pen-to-square me-1"></i> {{ profileForm.vehicleNumber ? 'Edit Vehicle' : 'Add Vehicle' }}
+            </button>
+            <button *ngIf="profileForm.vehicleNumber && !editMode['vehicle']" class="btn btn-outline-danger me-2" (click)="deleteSection('vehicle')">
+              <i class="fa-solid fa-trash me-1"></i> Delete
+            </button>
+            <button *ngIf="editMode['vehicle']" class="btn btn-outline-secondary" (click)="toggleEdit('vehicle', false)">
+              <i class="fa-solid fa-xmark me-1"></i> Cancel
+            </button>
+          </div>
+        </div>
+
+        <!-- Card View Mode -->
+        <div *ngIf="!editMode['vehicle']">
+          <div *ngIf="profileForm.vehicleNumber; else noVehicleCard" class="master-details-card p-4 rounded-3 bg-light border">
+            <div class="card-badge mb-3">
+              <span class="badge bg-primary text-white fs-6 px-3 py-2">
+                <i class="fa-solid fa-motorcycle me-1"></i> {{ profileForm.vehicleType }}
+              </span>
+            </div>
+            <div class="detail-row mb-3">
+              <span class="detail-label text-muted"><i class="fa-solid fa-hashtag text-secondary me-2"></i> Registration Number:</span>
+              <span class="detail-value fw-bold text-primary fs-4 text-uppercase tracking-wider">{{ profileForm.vehicleNumber }}</span>
+            </div>
+            <div class="detail-row mb-3">
+              <span class="detail-label text-muted"><i class="fa-solid fa-motorcycle text-secondary me-2"></i> Vehicle Model:</span>
+              <span class="detail-value text-dark fw-semibold">{{ profileForm.vehicleModel || 'Hero Splendor Plus' }}</span>
+            </div>
+
+            <div class="mt-4 pt-3 border-top d-flex gap-2">
+              <button class="btn btn-primary" (click)="toggleEdit('vehicle', true)">
+                <i class="fa-solid fa-pen me-1"></i> Update Vehicle
+              </button>
+              <button class="btn btn-outline-danger" (click)="deleteSection('vehicle')">
+                <i class="fa-solid fa-trash me-1"></i> Delete Vehicle
+              </button>
+            </div>
+          </div>
+
+          <ng-template #noVehicleCard>
+            <div class="no-data-card p-5 text-center border rounded-3 bg-light">
+              <i class="fa-solid fa-motorcycle fa-3x text-muted mb-3"></i>
+              <h5 class="fw-bold text-dark">No Vehicle Details Registered</h5>
+              <p class="text-muted small mb-3">Add your vehicle registration number in AB12CD3456 format to start receiving delivery orders.</p>
+              <button class="btn btn-primary btn-lg" (click)="toggleEdit('vehicle', true)">
+                <i class="fa-solid fa-plus me-1"></i> Add Vehicle Details
+              </button>
+            </div>
+          </ng-template>
+        </div>
+
+        <!-- Edit / Add Form Mode -->
+        <form *ngIf="editMode['vehicle']" (ngSubmit)="saveProfileSection('Vehicle Details', 'vehicle')">
+          <div class="form-group mb-3">
+            <label class="form-label fw-semibold">Vehicle Type</label>
+            <select [(ngModel)]="profileForm.vehicleType" name="vehicleType" class="form-select">
+              <option value="Bike">Motorcycle / Bike</option>
+              <option value="Scooter">Scooter / Activa</option>
+              <option value="EV">Electric Vehicle (EV)</option>
+              <option value="Bicycle">Bicycle</option>
+            </select>
+          </div>
+
+          <div class="form-group mb-3">
+            <label class="form-label fw-semibold">Vehicle Registration Number (Case Insensitive)</label>
+            <input 
+              type="text" 
+              [(ngModel)]="profileForm.vehicleNumber" 
+              (input)="formatUppercaseFields()"
+              name="vehicleNumber" 
+              placeholder="e.g. AB12CD3456" 
+              class="form-control text-uppercase fw-bold text-primary" 
+              required 
+            />
+            <small class="text-muted">Type in small or capital letters, it automatically converts to UPPERCASE (e.g. AB12CD3456).</small>
+          </div>
+
+          <div class="form-group mb-3">
+            <label class="form-label fw-semibold">Vehicle Model</label>
+            <input type="text" [(ngModel)]="profileForm.vehicleModel" name="vehicleModel" placeholder="e.g. Hero Splendor / Honda Activa 6G" class="form-control" />
+          </div>
+
+          <div class="d-flex gap-2 mt-4">
+            <button type="submit" class="btn btn-success" [disabled]="isSaving">
+              <i class="fa-solid fa-floppy-disk me-1"></i> Save Vehicle Details
+            </button>
+            <button type="button" class="btn btn-light" (click)="toggleEdit('vehicle', false)">Cancel</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- ==================== TAB 3: LICENSE MASTER ==================== -->
+      <div *ngIf="activeTab === 'license'">
+        <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-4">
+          <h3 class="m-0"><i class="fa-solid fa-address-card text-primary me-2"></i> License Master</h3>
+          <div class="action-buttons">
+            <button *ngIf="!editMode['license']" class="btn btn-outline-primary me-2" (click)="toggleEdit('license', true)">
+              <i class="fa-solid fa-pen-to-square me-1"></i> {{ profileForm.licenseNumber ? 'Edit License' : 'Add License' }}
+            </button>
+            <button *ngIf="profileForm.licenseNumber && !editMode['license']" class="btn btn-outline-danger me-2" (click)="deleteSection('license')">
+              <i class="fa-solid fa-trash me-1"></i> Delete
+            </button>
+            <button *ngIf="editMode['license']" class="btn btn-outline-secondary" (click)="toggleEdit('license', false)">
+              <i class="fa-solid fa-xmark me-1"></i> Cancel
+            </button>
+          </div>
+        </div>
+
+        <!-- Card View Mode -->
+        <div *ngIf="!editMode['license']">
+          <div *ngIf="profileForm.licenseNumber; else noLicenseCard" class="master-details-card p-4 rounded-3 bg-light border">
+            <div class="detail-row mb-3">
+              <span class="detail-label text-muted"><i class="fa-solid fa-id-badge text-secondary me-2"></i> License Number:</span>
+              <span class="detail-value fw-bold text-dark fs-5 text-uppercase">{{ profileForm.licenseNumber }}</span>
+            </div>
+            <div class="detail-row mb-3">
+              <span class="detail-label text-muted"><i class="fa-solid fa-calendar-days text-secondary me-2"></i> Expiry Date:</span>
+              <span class="detail-value text-dark">{{ profileForm.licenseExpiryDate || '2029-12-31' }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label text-muted"><i class="fa-solid fa-circle-check text-secondary me-2"></i> Verification Status:</span>
+              <span class="badge bg-success text-white">VERIFIED & ACTIVE</span>
+            </div>
+
+            <div class="mt-4 pt-3 border-top d-flex gap-2">
+              <button class="btn btn-primary" (click)="toggleEdit('license', true)">
+                <i class="fa-solid fa-pen me-1"></i> Update License
+              </button>
+              <button class="btn btn-outline-danger" (click)="deleteSection('license')">
+                <i class="fa-solid fa-trash me-1"></i> Delete License
+              </button>
+            </div>
+          </div>
+
+          <ng-template #noLicenseCard>
+            <div class="no-data-card p-5 text-center border rounded-3 bg-light">
+              <i class="fa-solid fa-address-card fa-3x text-muted mb-3"></i>
+              <h5 class="fw-bold text-dark">No Driving License Registered</h5>
+              <p class="text-muted small mb-3">Please enter your valid driving license number and expiry date.</p>
+              <button class="btn btn-primary btn-lg" (click)="toggleEdit('license', true)">
+                <i class="fa-solid fa-plus me-1"></i> Add Driving License
+              </button>
+            </div>
+          </ng-template>
+        </div>
+
+        <!-- Edit Form Mode -->
+        <form *ngIf="editMode['license']" (ngSubmit)="saveProfileSection('Driving License', 'license')">
+          <div class="form-group mb-3">
+            <label class="form-label fw-semibold">Driving License Number (Case Insensitive)</label>
+            <input 
+              type="text" 
+              [(ngModel)]="profileForm.licenseNumber" 
+              (input)="formatUppercaseFields()"
+              name="licenseNumber" 
+              placeholder="e.g. DL1420110012345" 
+              class="form-control text-uppercase fw-bold" 
+              required 
+            />
+          </div>
+
+          <div class="form-group mb-3">
+            <label class="form-label fw-semibold">License Expiry Date</label>
+            <input type="date" [(ngModel)]="profileForm.licenseExpiryDate" name="licenseExpiryDate" class="form-control" />
+          </div>
+
+          <div class="d-flex gap-2 mt-4">
+            <button type="submit" class="btn btn-success" [disabled]="isSaving">
+              <i class="fa-solid fa-floppy-disk me-1"></i> Save License Details
+            </button>
+            <button type="button" class="btn btn-light" (click)="toggleEdit('license', false)">Cancel</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- ==================== TAB 4: BANK DETAILS MASTER ==================== -->
+      <div *ngIf="activeTab === 'bank'">
+        <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-4">
+          <h3 class="m-0"><i class="fa-solid fa-building-columns text-primary me-2"></i> Bank & Payout Master</h3>
+          <div class="action-buttons">
+            <button *ngIf="!editMode['bank']" class="btn btn-outline-primary me-2" (click)="toggleEdit('bank', true)">
+              <i class="fa-solid fa-pen-to-square me-1"></i> {{ profileForm.accountNumber ? 'Edit Bank' : 'Add Bank Account' }}
+            </button>
+            <button *ngIf="profileForm.accountNumber && !editMode['bank']" class="btn btn-outline-danger me-2" (click)="deleteSection('bank')">
+              <i class="fa-solid fa-trash me-1"></i> Delete
+            </button>
+            <button *ngIf="editMode['bank']" class="btn btn-outline-secondary" (click)="toggleEdit('bank', false)">
+              <i class="fa-solid fa-xmark me-1"></i> Cancel
+            </button>
+          </div>
+        </div>
+
+        <!-- Card View Mode -->
+        <div *ngIf="!editMode['bank']">
+          <div *ngIf="profileForm.accountNumber; else noBankCard" class="master-details-card p-4 rounded-3 bg-light border">
+            <div class="detail-row mb-3">
+              <span class="detail-label text-muted"><i class="fa-solid fa-landmark text-secondary me-2"></i> Bank Name:</span>
+              <span class="detail-value fw-bold text-dark fs-5">{{ profileForm.bankName || 'HDFC Bank' }}</span>
+            </div>
+            <div class="detail-row mb-3">
+              <span class="detail-label text-muted"><i class="fa-solid fa-user-check text-secondary me-2"></i> Account Holder:</span>
+              <span class="detail-value text-dark">{{ profileForm.bankAccountHolder }}</span>
+            </div>
+            <div class="detail-row mb-3">
+              <span class="detail-label text-muted"><i class="fa-solid fa-credit-card text-secondary me-2"></i> Account Number:</span>
+              <span class="detail-value fw-bold text-primary fs-5">{{ profileForm.accountNumber }}</span>
+            </div>
+            <div class="detail-row mb-3">
+              <span class="detail-label text-muted"><i class="fa-solid fa-code text-secondary me-2"></i> IFSC Code:</span>
+              <span class="detail-value text-uppercase fw-bold">{{ profileForm.ifscCode }}</span>
+            </div>
+            <div class="detail-row" *ngIf="profileForm.upiId">
+              <span class="detail-label text-muted"><i class="fa-solid fa-qrcode text-secondary me-2"></i> UPI ID:</span>
+              <span class="detail-value text-success fw-bold">{{ profileForm.upiId }}</span>
+            </div>
+
+            <div class="mt-4 pt-3 border-top d-flex gap-2">
+              <button class="btn btn-primary" (click)="toggleEdit('bank', true)">
+                <i class="fa-solid fa-pen me-1"></i> Update Bank Details
+              </button>
+              <button class="btn btn-outline-danger" (click)="deleteSection('bank')">
+                <i class="fa-solid fa-trash me-1"></i> Delete Bank Account
+              </button>
+            </div>
+          </div>
+
+          <ng-template #noBankCard>
+            <div class="no-data-card p-5 text-center border rounded-3 bg-light">
+              <i class="fa-solid fa-building-columns fa-3x text-muted mb-3"></i>
+              <h5 class="fw-bold text-dark">No Bank Account Details Linked</h5>
+              <p class="text-muted small mb-3">Link your bank account or UPI ID to receive weekly earnings payouts.</p>
+              <button class="btn btn-primary btn-lg" (click)="toggleEdit('bank', true)">
+                <i class="fa-solid fa-plus me-1"></i> Link Bank Account
+              </button>
+            </div>
+          </ng-template>
+        </div>
+
+        <!-- Edit Form Mode -->
+        <form *ngIf="editMode['bank']" (ngSubmit)="saveProfileSection('Bank & Payout Details', 'bank')">
+          <div class="form-group mb-3">
+            <label class="form-label fw-semibold">Account Holder Name</label>
+            <input type="text" [(ngModel)]="profileForm.bankAccountHolder" name="bankAccountHolder" class="form-control" required />
+          </div>
+
+          <div class="form-group mb-3">
+            <label class="form-label fw-semibold">Bank Name</label>
+            <input type="text" [(ngModel)]="profileForm.bankName" name="bankName" placeholder="e.g. HDFC Bank / SBI" class="form-control" required />
+          </div>
+
+          <div class="form-group mb-3">
+            <label class="form-label fw-semibold">Account Number</label>
+            <input type="text" [(ngModel)]="profileForm.accountNumber" name="accountNumber" class="form-control" required />
+          </div>
+
+          <div class="form-group mb-3">
+            <label class="form-label fw-semibold">IFSC Code (Case Insensitive)</label>
+            <input 
+              type="text" 
+              [(ngModel)]="profileForm.ifscCode" 
+              (input)="formatUppercaseFields()"
+              name="ifscCode" 
+              placeholder="e.g. HDFC0001234" 
+              class="form-control text-uppercase fw-bold" 
+              required 
+            />
+          </div>
+
+          <div class="form-group mb-3">
+            <label class="form-label fw-semibold">UPI ID (Optional)</label>
+            <input type="text" [(ngModel)]="profileForm.upiId" name="upiId" placeholder="e.g. name@upi" class="form-control" />
+          </div>
+
+          <div class="d-flex gap-2 mt-4">
+            <button type="submit" class="btn btn-success" [disabled]="isSaving">
+              <i class="fa-solid fa-floppy-disk me-1"></i> Save Bank Details
+            </button>
+            <button type="button" class="btn btn-light" (click)="toggleEdit('bank', false)">Cancel</button>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>

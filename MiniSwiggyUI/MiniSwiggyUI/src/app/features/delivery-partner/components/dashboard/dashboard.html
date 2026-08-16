@@ -1,0 +1,136 @@
+<div class="delivery-dashboard-container">
+  <div class="dashboard-header">
+    <div class="user-greeting">
+      <div class="avatar-box">
+        <img [src]="profile?.profileImageUrl || defaultAvatar" (error)="onAvatarError($event)" alt="Partner Avatar" class="avatar-img" />
+      </div>
+      <div>
+        <h2>Welcome back, {{ profile?.fullName || 'Delivery Partner' }} 👋</h2>
+        <p class="subtitle">Vehicle: <strong>{{ profile?.vehicleNumber || 'Not Registered Yet' }}</strong> ({{ profile?.vehicleType || 'Vehicle' }})</p>
+      </div>
+    </div>
+
+    <div class="online-toggle-card" [class.is-online]="profile?.isOnline">
+      <div class="status-info">
+        <span class="status-dot"></span>
+        <span class="status-text">{{ profile?.isOnline ? 'ONLINE & READY' : 'OFFLINE' }}</span>
+      </div>
+      <button class="toggle-btn" (click)="toggleOnline()">
+        {{ profile?.isOnline ? 'Go Offline' : 'Go Online' }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Metric Cards Grid -->
+  <div class="metrics-grid">
+    <div class="metric-card primary">
+      <div class="icon-box"><i class="fa-solid fa-truck-fast"></i></div>
+      <div class="metric-details">
+        <span class="label">Today's Deliveries</span>
+        <h3 class="value">{{ earnings?.todayDeliveriesCount || 0 }}</h3>
+      </div>
+    </div>
+
+    <div class="metric-card success">
+      <div class="icon-box"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+      <div class="metric-details">
+        <span class="label">Today's Earnings</span>
+        <h3 class="value">₹{{ earnings?.todayEarnings || 0 }}</h3>
+      </div>
+    </div>
+
+    <div class="metric-card warning">
+      <div class="icon-box"><i class="fa-solid fa-clock-rotate-left"></i></div>
+      <div class="metric-details">
+        <span class="label">Assigned Orders</span>
+        <h3 class="value">{{ assignedCount }}</h3>
+      </div>
+    </div>
+
+    <div class="metric-card info">
+      <div class="icon-box"><i class="fa-solid fa-star"></i></div>
+      <div class="metric-details">
+        <span class="label">Rating</span>
+        <h3 class="value">{{ (earnings?.averageRating && earnings.averageRating > 0) ? (earnings.averageRating + ' / 5.0') : 'N/A' }}</h3>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mapped Restaurant Details Block -->
+  <div class="mapped-restaurant-section mb-4">
+    <div class="section-title">
+      <i class="fa-solid fa-store text-primary"></i> Mapped Partner Restaurant
+    </div>
+
+    <div *ngIf="activeOrder; else noMappedRes" class="mapped-res-card glass-card p-3">
+      <div class="res-flex">
+        <div class="res-img-box">
+          <img [src]="activeOrder.restaurantImageUrl || defaultRestaurantImage" (error)="onRestaurantImgError($event)" alt="Partner Restaurant" class="res-thumb" />
+        </div>
+        <div class="res-details">
+          <h4>{{ activeOrder.restaurantName }}</h4>
+          <p class="mb-1"><i class="fa-solid fa-location-dot me-1 text-danger"></i> {{ activeOrder.restaurantAddress }}</p>
+          <p class="mb-1"><i class="fa-solid fa-phone me-1 text-primary"></i> {{ activeOrder.restaurantPhone }}</p>
+          <span class="badge bg-success-light text-success"><i class="fa-solid fa-circle-check"></i> Active Pickup Location</span>
+        </div>
+      </div>
+    </div>
+
+    <ng-template #noMappedRes>
+      <div class="no-data-card glass-card p-4 text-center">
+        <i class="fa-solid fa-store-slash fa-2x text-muted mb-2"></i>
+        <h5 class="mb-1 text-secondary">No Mapped Restaurant Found</h5>
+        <p class="small text-muted mb-0">Accept an assigned order to view your mapped pickup restaurant details.</p>
+      </div>
+    </ng-template>
+  </div>
+
+  <!-- Active Delivery Quick Widget -->
+  <div class="active-delivery-section">
+    <div class="section-title">
+      <i class="fa-solid fa-location-dot"></i> Active Delivery Overview
+    </div>
+
+    <div *ngIf="activeOrder; else noActiveOrder" class="active-order-card">
+      <div class="order-badge-header">
+        <span class="order-no">Order #{{ activeOrder.orderNumber }}</span>
+        <span class="status-badge" [class.in-progress]="true">{{ activeOrder.status }}</span>
+      </div>
+
+      <div class="order-body">
+        <div class="info-block">
+          <label>Restaurant</label>
+          <p class="name">{{ activeOrder.restaurantName }}</p>
+          <p class="address"><i class="fa-solid fa-store"></i> {{ activeOrder.restaurantAddress }}</p>
+        </div>
+
+        <div class="info-block">
+          <label>Customer</label>
+          <p class="name">{{ activeOrder.customerName }}</p>
+          <p class="address"><i class="fa-solid fa-house"></i> {{ activeOrder.deliveryAddress }}</p>
+        </div>
+
+        <div class="info-block amount-block">
+          <label>Order Amount</label>
+          <p class="amount">₹{{ activeOrder.finalAmount }}</p>
+          <span class="payment-badge">{{ activeOrder.paymentMethod }}</span>
+        </div>
+      </div>
+
+      <div class="action-footer">
+        <a routerLink="/delivery-partner/active-delivery" class="btn btn-primary">
+          <i class="fa-solid fa-route"></i> Open Live Tracker & Actions
+        </a>
+      </div>
+    </div>
+
+    <ng-template #noActiveOrder>
+      <div class="empty-card">
+        <i class="fa-solid fa-circle-check empty-icon"></i>
+        <h3>No Active Delivery Right Now</h3>
+        <p>Check "Assigned Orders" to accept a new delivery task.</p>
+        <a routerLink="/delivery-partner/assigned-orders" class="btn btn-outline">View Assigned Orders</a>
+      </div>
+    </ng-template>
+  </div>
+</div>

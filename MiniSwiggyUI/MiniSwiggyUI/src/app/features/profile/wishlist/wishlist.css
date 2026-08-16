@@ -1,0 +1,135 @@
+/* ==========================================================
+   MINISWIGGY - GLASSMORPHISM WISHLIST
+   ========================================================== */
+
+.wishlist-page {
+  padding-top: 2rem;
+  padding-bottom: 5rem;
+}
+
+.page-header {
+  margin-bottom: 2.25rem;
+}
+
+.page-header h2 {
+  font-size: 1.85rem;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+}
+
+.page-header p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.restaurant-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2rem;
+}
+
+.res-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-glass);
+  box-shadow: var(--shadow-glass);
+  overflow: hidden;
+  transition: var(--transition-normal);
+}
+
+.res-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-glass-hover);
+  border-color: rgba(255, 82, 0, 0.25);
+}
+
+.res-image-wrapper {
+  position: relative;
+  height: 190px;
+  overflow: hidden;
+}
+
+.res-banner-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.res-card:hover .res-banner-img {
+  transform: scale(1.06);
+}
+
+.remove-fav-btn {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.85rem;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: none;
+  transition: var(--transition-fast);
+  color: #ef4444;
+}
+
+.remove-fav-btn:hover {
+  transform: scale(1.15);
+  background: #fee2e2;
+}
+
+.res-info {
+  padding: 1.35rem;
+}
+
+.res-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.45rem;
+}
+
+.res-title-row h4 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  margin: 0;
+  color: var(--text-main);
+}
+
+.rating-badge {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  color: #ffffff;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.78rem;
+  font-weight: 800;
+  box-shadow: 0 2px 6px rgba(34, 197, 94, 0.3);
+}
+
+.cuisine-text {
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+
+.address-text {
+  font-size: 0.82rem;
+  color: var(--text-light);
+  margin-top: 0.35rem;
+}
+
+.w-100 { width: 100%; }
+.mt-3 { margin-top: 1.25rem; }
+.mb-3 { margin-bottom: 1.25rem; }
+.me-1 { margin-right: 0.25rem; }
+.me-2 { margin-right: 0.5rem; }
+.ms-1 { margin-left: 0.25rem; }
+.text-danger { color: #ef4444; }

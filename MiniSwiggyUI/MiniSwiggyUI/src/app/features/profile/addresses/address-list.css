@@ -1,0 +1,115 @@
+/* ==========================================================
+   MINISWIGGY - GLASSMORPHISM ADDRESS MANAGEMENT
+   ========================================================== */
+
+.address-management-page {
+  padding-top: 2rem;
+  padding-bottom: 5rem;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2.25rem;
+}
+
+.page-header h2 {
+  font-size: 1.85rem;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+}
+
+.address-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+  gap: 1.75rem;
+}
+
+.address-card {
+  padding: 1.75rem;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-glass);
+  box-shadow: var(--shadow-glass);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.35rem;
+  transition: var(--transition-normal);
+}
+
+.address-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-glass-hover);
+  border-color: rgba(255, 82, 0, 0.25);
+}
+
+.address-card.is-default {
+  border-color: var(--primary);
+  box-shadow: 0 10px 25px rgba(255, 82, 0, 0.12), 0 0 0 2px rgba(255, 82, 0, 0.2);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 247, 237, 0.9) 100%);
+}
+
+.card-header-flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.addr-tag-badge {
+  font-weight: 800;
+  font-size: 0.88rem;
+  color: var(--text-main);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.addr-text {
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 0.35rem;
+  line-height: 1.4;
+}
+
+.addr-city-state {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.65rem;
+  padding-top: 1rem;
+  border-top: 1px dashed var(--border-color);
+}
+
+.me-auto { margin-right: auto; }
+.me-1 { margin-right: 0.25rem; }
+.me-2 { margin-right: 0.5rem; }
+.p-4 { padding: 1.5rem; }
+
+.form-row {
+  display: flex;
+  gap: 1.25rem;
+}
+
+.form-row .col {
+  flex: 1;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+}

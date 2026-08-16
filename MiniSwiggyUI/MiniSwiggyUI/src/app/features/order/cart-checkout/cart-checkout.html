@@ -1,0 +1,346 @@
+<div class="cart-checkout-page container">
+  <!-- Empty Cart View -->
+  <div *ngIf="cartItems.length === 0" class="empty-cart-card glass-card">
+    <div class="empty-cart-illustration">
+      <i class="fa-solid fa-basket-shopping"></i>
+    </div>
+    <h2>Your Cart is Empty</h2>
+    <p>Good food is always cooking! Go ahead, order some yummy food from the menu.</p>
+    <button class="btn btn-primary btn-lg" (click)="continueShopping()">
+      <i class="fa-solid fa-utensils me-2"></i> Browse Restaurants
+    </button>
+  </div>
+
+  <!-- Cart with Items -->
+  <div *ngIf="cartItems.length > 0" class="checkout-grid">
+    <!-- Left Column: Delivery Address & Cart Items -->
+    <div class="checkout-left">
+      <!-- 1. Delivery Address Card -->
+      <div class="checkout-step-card glass-card">
+        <div class="step-header">
+          <span class="step-num">1</span>
+          <h3>Select Delivery Address</h3>
+          <button class="btn btn-outline-primary btn-sm ms-auto" (click)="openCreateAddressModal()">
+            <i class="fa-solid fa-plus"></i> Add New Address
+          </button>
+        </div>
+
+        <div class="address-options-grid">
+          <div 
+            *ngFor="let addr of addresses" 
+            class="address-option-card"
+            [class.selected]="selectedAddressId === addr.id"
+            (click)="selectedAddressId = addr.id"
+          >
+            <!-- Dynamic Icon: House for Home, Briefcase for Office, Pin for Other -->
+            <div class="addr-icon" [ngClass]="addr.addressType === 'OFFICE' ? 'office-icon' : 'home-icon'">
+              <i class="fa-solid" [ngClass]="addr.addressType === 'OFFICE' ? 'fa-briefcase' : (addr.addressType === 'OTHER' ? 'fa-location-dot' : 'fa-house')"></i>
+            </div>
+            
+            <div class="addr-details">
+              <div class="addr-header-row">
+                <div class="addr-type-wrapper">
+                  <span class="addr-tag" [ngClass]="addr.addressType === 'OFFICE' ? 'tag-office' : 'tag-home'">
+                    {{ addr.addressType === 'OFFICE' ? 'OFFICE' : (addr.addressType === 'OTHER' ? 'OTHER' : 'HOME') }}
+                  </span>
+                  <span *ngIf="addr.isDefault" class="default-badge" title="Default Delivery Address">
+                    <i class="fa-solid fa-star"></i> Default
+                  </span>
+                </div>
+
+                <div class="addr-actions">
+                  <button 
+                    *ngIf="!addr.isDefault" 
+                    class="icon-btn-sm text-warning" 
+                    (click)="setAsPrimary(addr, $event)" 
+                    title="Set as Default Address"
+                  >
+                    <i class="fa-regular fa-star"></i>
+                  </button>
+                  <button class="icon-btn-sm" (click)="openEditAddressModal(addr, $event)" title="Edit Address">
+                    <i class="fa-solid fa-pen"></i>
+                  </button>
+                  <button class="icon-btn-sm text-danger" (click)="deleteAddress(addr.id, $event)" title="Delete Address">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                </div>
+              </div>
+
+              <p class="addr-line">{{ addr.addressLine }}</p>
+              <p class="addr-city">{{ addr.city }}, {{ addr.state }} - {{ addr.postalCode }}</p>
+            </div>
+
+            <!-- Active Selected Check Mark -->
+            <i *ngIf="selectedAddressId === addr.id" class="fa-solid fa-circle-check check-mark"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Order Items List -->
+      <div class="checkout-step-card glass-card">
+        <div class="step-header">
+          <span class="step-num">2</span>
+          <h3>Items in your Cart ({{ cartItems.length }})</h3>
+          <button class="btn btn-secondary btn-sm ms-auto" (click)="clearAll()">
+            <i class="fa-solid fa-trash me-1"></i> Clear Cart
+          </button>
+        </div>
+
+        <div class="cart-items-list">
+          <div *ngFor="let item of cartItems" class="cart-item-row">
+            <div class="item-name-col">
+              <span [class.veg]="item.isVegetarian" [class.nonveg]="!item.isVegetarian" class="food-type-icon"></span>
+              <img [src]="formatImageUrl(item.imageUrl)" (error)="onImgError($event)" [alt]="item.foodItemName" class="cart-item-thumb" />
+              <div>
+                <h4 class="item-title">{{ item.foodItemName }}</h4>
+                <span class="item-price">₹{{ getItemPrice(item) }} per item</span>
+              </div>
+            </div>
+
+            <div class="item-qty-col">
+              <div class="qty-counter">
+                <button class="qty-btn" (click)="updateQty(item, -1)"><i class="fa-solid fa-minus"></i></button>
+                <span class="qty-val">{{ getItemQty(item) }}</span>
+                <button class="qty-btn" (click)="updateQty(item, 1)"><i class="fa-solid fa-plus"></i></button>
+              </div>
+            </div>
+
+            <div class="item-total-col">
+              ₹{{ getItemTotal(item) }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Payment Method Card -->
+      <div class="checkout-step-card glass-card">
+        <div class="step-header">
+          <span class="step-num">3</span>
+          <h3>Select Payment Method</h3>
+        </div>
+
+        <div class="payment-methods-grid">
+          <label class="payment-option" [class.selected]="paymentMethod === 'COD'">
+            <input type="radio" name="payMethod" [(ngModel)]="paymentMethod" value="COD" />
+            <i class="fa-solid fa-hand-holding-dollar pay-icon"></i>
+            <div>
+              <strong>Cash / Pay on Delivery</strong>
+              <p>Pay cash or UPI upon delivery</p>
+            </div>
+          </label>
+
+          <label class="payment-option disabled-option" style="opacity: 0.55; cursor: not-allowed;">
+            <input type="radio" name="payMethod" value="UPI" disabled />
+            <i class="fa-solid fa-mobile-screen-button pay-icon text-muted"></i>
+            <div>
+              <div class="d-flex align-items-center gap-2">
+                <strong class="text-muted">Instant Online / UPI</strong>
+                <span class="badge bg-secondary" style="font-size: 0.65rem;">Disabled</span>
+              </div>
+              <p class="text-muted mb-0">Temporarily disabled by admin</p>
+            </div>
+          </label>
+        </div>
+
+        <!-- UPI Details Box when Online/UPI is selected -->
+        <div *ngIf="paymentMethod === 'UPI'" class="upi-payment-details-box mt-3 p-3 rounded" style="background: rgba(255, 126, 0, 0.06); border: 1px dashed #ff7e00;">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="fw-bold text-dark"><i class="fa-solid fa-qrcode text-warning me-2"></i> Online UPI Payment</span>
+            <span class="badge bg-success"><i class="fa-solid fa-shield-halved me-1"></i> Verified Merchant</span>
+          </div>
+          <div class="mb-2">
+            <label class="small text-muted d-block mb-1">Pay to UPI ID:</label>
+            <div class="d-flex gap-2">
+              <input type="text" class="form-control form-control-sm fw-bold text-dark" [value]="upiId" readonly style="letter-spacing: 0.5px;" />
+              <button class="btn btn-outline-warning btn-sm text-nowrap" type="button" (click)="copyUpiId()">
+                <i class="fa-solid fa-copy me-1"></i> Copy
+              </button>
+            </div>
+          </div>
+          <div class="d-flex justify-content-between align-items-center mt-2 pt-2 border-top">
+            <span class="small text-muted">Amount to Pay: <strong class="text-dark fs-6">₹{{ getGrandTotal() }}</strong></span>
+            <a [href]="getUpiUrl()" class="btn btn-sm btn-warning text-white fw-bold">
+              <i class="fa-solid fa-bolt me-1"></i> Pay via UPI App
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Bill Details & Coupons -->
+    <div class="checkout-right">
+      <!-- Promo Coupons Card -->
+      <div class="glass-card coupon-card">
+        <h4><i class="fa-solid fa-ticket text-primary me-2"></i> Offers & Coupons</h4>
+        
+        <div *ngIf="!appliedCoupon" class="coupon-input-group">
+          <input 
+            type="text" 
+            [(ngModel)]="couponCode" 
+            placeholder="Enter promo code (e.g. WELCOME50)" 
+          />
+          <button class="btn btn-primary btn-sm" (click)="applyCouponCode()">APPLY</button>
+        </div>
+
+        <div *ngIf="appliedCoupon" class="applied-coupon-pill">
+          <div>
+            <i class="fa-solid fa-circle-check me-2"></i>
+            <span>'<strong>{{ appliedCoupon }}</strong>' applied</span>
+          </div>
+          <button class="remove-coupon-btn" (click)="removeCoupon()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+      </div>
+
+      <!-- Bill Summary Card -->
+      <div class="glass-card bill-summary-card">
+        <h4>Bill Details</h4>
+
+        <div class="bill-row">
+          <span>Item Total</span>
+          <span>₹{{ getSubtotal() }}</span>
+        </div>
+
+        <div class="bill-row">
+          <span>Delivery Fee</span>
+          <span>₹{{ deliveryFee }}</span>
+        </div>
+
+        <div class="bill-row">
+          <span>GST & Restaurant Charges</span>
+          <span>₹{{ taxAmount | number:'1.2-2' }}</span>
+        </div>
+
+        <div *ngIf="discountAmount > 0" class="bill-row discount-row">
+          <span>Discount Coupon</span>
+          <span>- ₹{{ discountAmount }}</span>
+        </div>
+
+        <div class="bill-divider"></div>
+
+        <div class="bill-row grand-total-row">
+          <span>To Pay</span>
+          <span class="total-price">₹{{ getGrandTotal() }}</span>
+        </div>
+
+        <button 
+          class="btn btn-primary btn-lg place-order-btn" 
+          (click)="placeOrder()" 
+          [disabled]="isPlacingOrder"
+        >
+          <span *ngIf="!isPlacingOrder">PAY & PLACE ORDER <i class="fa-solid fa-arrow-right ms-2"></i></span>
+          <span *ngIf="isPlacingOrder"><i class="fa-solid fa-spinner fa-spin me-2"></i> Processing Order...</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add / Edit Delivery Address Modal (Same as Saved Addresses) -->
+  <div *ngIf="showAddressModal" class="modal-backdrop">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>{{ editingAddressId === 0 ? 'Add New Delivery Address' : 'Edit Delivery Address' }}</h3>
+        <button class="modal-close-btn" (click)="showAddressModal = false"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <!-- Address Type Selector: HOME / OFFICE / OTHER -->
+      <div class="form-group mb-3">
+        <label class="form-label">Address Type / Label *</label>
+        <div class="type-selector-pills">
+          <button 
+            type="button" 
+            class="type-pill-btn" 
+            [class.active]="newAddress.addressType === 'HOME' || !newAddress.addressType" 
+            (click)="newAddress.addressType = 'HOME'"
+          >
+            <i class="fa-solid fa-house me-1"></i> Home
+          </button>
+          <button 
+            type="button" 
+            class="type-pill-btn" 
+            [class.active]="newAddress.addressType === 'OFFICE'" 
+            (click)="newAddress.addressType = 'OFFICE'"
+          >
+            <i class="fa-solid fa-briefcase me-1"></i> Office / Work
+          </button>
+          <button 
+            type="button" 
+            class="type-pill-btn" 
+            [class.active]="newAddress.addressType === 'OTHER'" 
+            (click)="newAddress.addressType = 'OTHER'"
+          >
+            <i class="fa-solid fa-location-dot me-1"></i> Other
+          </button>
+        </div>
+      </div>
+
+      <div class="row g-2 mb-3">
+        <div class="col-6">
+          <label class="form-label">Full Name *</label>
+          <input type="text" [(ngModel)]="newAddress.fullName" class="form-control" placeholder="e.g. Amit Maurya" />
+        </div>
+        <div class="col-6">
+          <label class="form-label">Phone Number *</label>
+          <div class="input-phone-container">
+            <span class="input-phone-prefix">+91</span>
+            <input 
+              type="tel" 
+              [(ngModel)]="newAddress.phoneNumber" 
+              class="form-control" 
+              placeholder="9876543210" 
+              maxlength="10"
+              inputmode="numeric"
+              (keypress)="onlyNumbers($event)"
+              (input)="onPhoneInput($event)"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-2 mb-3">
+        <div class="col-6">
+          <label class="form-label">House / Flat No *</label>
+          <input type="text" [(ngModel)]="newAddress.houseNo" class="form-control" placeholder="e.g. Flat 402, Block B" />
+        </div>
+        <div class="col-6">
+          <label class="form-label">Street / Area *</label>
+          <input type="text" [(ngModel)]="newAddress.street" class="form-control" placeholder="e.g. Green Valley Society" />
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Landmark</label>
+        <input type="text" [(ngModel)]="newAddress.landmark" class="form-control" placeholder="e.g. Near City Bank ATM" />
+      </div>
+
+      <div class="row g-2 mb-3">
+        <div class="col-4">
+          <label class="form-label">City *</label>
+          <input type="text" [(ngModel)]="newAddress.city" class="form-control" placeholder="e.g. New Delhi" />
+        </div>
+        <div class="col-4">
+          <label class="form-label">State</label>
+          <input type="text" [(ngModel)]="newAddress.state" class="form-control" placeholder="e.g. Delhi" />
+        </div>
+        <div class="col-4">
+          <label class="form-label">Pincode</label>
+          <input type="text" [(ngModel)]="newAddress.pincode" class="form-control" placeholder="e.g. 110001" />
+        </div>
+      </div>
+
+      <!-- Set as Default Checkbox -->
+      <div class="form-check mb-4">
+        <input class="form-check-input" type="checkbox" id="isDefaultCheck" [(ngModel)]="newAddress.isDefault">
+        <label class="form-check-label ms-2" for="isDefaultCheck">
+          <strong>Set as Default Delivery Address?</strong>
+        </label>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary me-2" (click)="showAddressModal = false">Cancel</button>
+        <button class="btn btn-primary" (click)="saveNewAddress()">
+          <i class="fa-solid fa-floppy-disk me-1"></i> Save Address
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

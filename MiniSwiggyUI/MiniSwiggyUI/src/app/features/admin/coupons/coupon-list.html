@@ -1,0 +1,189 @@
+<div class="coupon-management-page container-fluid px-lg-4 py-3">
+  <!-- Page Header Card -->
+  <div class="page-header-card glass-card mb-4">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+      <div>
+        <div class="header-pill-badge">
+          <i class="fa-solid fa-ticket text-primary me-1"></i> Promo & Discount Coupons Master
+        </div>
+        <h2 class="page-title">Coupon & Promo Management</h2>
+        <p class="page-subtitle">Manage promo discount codes, cashback percentages, maximum discount thresholds, and validity rules</p>
+      </div>
+      <button class="btn btn-primary btn-add-glow" (click)="openCreateModal()">
+        <i class="fa-solid fa-plus-circle me-2"></i> Add New Coupon
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="glass-card loading-box text-center my-4 p-5">
+    <i class="fa-solid fa-circle-notch fa-spin fa-2x text-primary mb-3"></i>
+    <h5>Loading coupons...</h5>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && coupons.length === 0" class="glass-card text-center my-4 p-5">
+    <i class="fa-solid fa-ticket fa-3x text-muted mb-3"></i>
+    <h3>No Coupons Available</h3>
+    <p class="text-muted">Click "Add New Coupon" above to create discount promo codes.</p>
+  </div>
+
+  <!-- Coupons Grid -->
+  <div *ngIf="!isLoading && coupons.length > 0" class="row g-4 mb-4">
+    <div *ngFor="let coupon of coupons" class="col-md-6 col-lg-4">
+      <div class="glass-card coupon-ticket-modern-card h-100" [class.coupon-inactive]="!coupon.isActive">
+        <div class="coupon-top-bar d-flex justify-content-between align-items-center mb-2">
+          <span class="discount-pill-badge">{{ coupon.discountPercentage }}% OFF</span>
+          <span *ngIf="coupon.isActive" class="status-chip chip-active">
+            <i class="fa-solid fa-circle me-1 small-dot"></i> ACTIVE
+          </span>
+          <span *ngIf="!coupon.isActive" class="status-chip chip-inactive">
+            <i class="fa-solid fa-circle me-1 small-dot"></i> INACTIVE
+          </span>
+        </div>
+
+        <div class="coupon-code-banner my-3">
+          <h3 class="coupon-code-text">{{ coupon.code }}</h3>
+          <button class="copy-icon-btn" (click)="copyCode(coupon.code)" title="Copy Code">
+            <i class="fa-regular fa-copy"></i>
+          </button>
+        </div>
+
+        <div class="coupon-meta-info mb-3">
+          <div class="d-flex justify-content-between text-muted small py-1 border-bottom">
+            <span>Max Discount</span>
+            <strong class="text-dark">₹{{ coupon.maxDiscountAmount }}</strong>
+          </div>
+          <div class="d-flex justify-content-between text-muted small py-1 border-bottom">
+            <span>Min Order Amount</span>
+            <strong class="text-dark">₹{{ coupon.minOrderAmount }}</strong>
+          </div>
+          <div class="d-flex justify-content-between text-muted small py-1">
+            <span>Expiry Date</span>
+            <strong class="text-danger">{{ coupon.expiryDate | date:'dd MMM yyyy' }}</strong>
+          </div>
+        </div>
+
+        <!-- Footer Actions (Edit and Toggle Active/Inactive) -->
+        <div class="coupon-actions-footer pt-2 border-top d-flex justify-content-end gap-2">
+          <button class="btn-icon-action btn-edit" (click)="openEditModal(coupon)" title="Edit Coupon">
+            <i class="fa-solid fa-pen"></i>
+          </button>
+          <button 
+            class="btn-icon-action" 
+            [ngClass]="coupon.isActive ? 'btn-toggle-active' : 'btn-toggle-inactive'" 
+            (click)="toggleStatus(coupon)" 
+            [title]="coupon.isActive ? 'Deactivate Coupon' : 'Activate Coupon'"
+          >
+            <i class="fa-solid" [ngClass]="coupon.isActive ? 'fa-toggle-on' : 'fa-toggle-off'"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add / Edit Coupon Modal -->
+  <div *ngIf="showModal" class="modal-overlay-backdrop">
+    <div class="modal-box-glass modal-box-lg">
+      <div class="modal-box-header">
+        <div class="d-flex align-items-center gap-3">
+          <div class="modal-box-icon" [class.edit-icon]="editingId > 0">
+            <i class="fa-solid" [ngClass]="editingId > 0 ? 'fa-ticket' : 'fa-plus'"></i>
+          </div>
+          <div>
+            <h4>{{ editingId === 0 ? 'Add New Promo Coupon' : 'Edit Promo Coupon' }}</h4>
+            <span class="text-muted small">Configure discount percentages, threshold rules, and expiration</span>
+          </div>
+        </div>
+        <button class="modal-close-icon-btn" (click)="showModal = false"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="modal-box-body">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label fw-bold">Coupon Promo Code *</label>
+            <div class="input-icon-field">
+              <i class="fa-solid fa-tag"></i>
+              <input type="text" [(ngModel)]="formData.code" class="form-control text-uppercase fw-bold" placeholder="e.g. WELCOME50" />
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-bold">Discount Percentage (%) *</label>
+            <div class="input-icon-field">
+              <i class="fa-solid fa-percent"></i>
+              <input type="number" [(ngModel)]="formData.discountPercentage" class="form-control" placeholder="50" />
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-bold">Max Discount Cap (₹) *</label>
+            <div class="input-icon-field">
+              <i class="fa-solid fa-indian-rupee-sign"></i>
+              <input type="number" [(ngModel)]="formData.maxDiscountAmount" class="form-control" placeholder="100" />
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-bold">Minimum Order Amount (₹) *</label>
+            <div class="input-icon-field">
+              <i class="fa-solid fa-bag-shopping"></i>
+              <input type="number" [(ngModel)]="formData.minOrderAmount" class="form-control" placeholder="199" />
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-bold">Expiry Date *</label>
+            <div class="input-icon-field">
+              <i class="fa-solid fa-calendar"></i>
+              <input type="date" [(ngModel)]="formData.expiryDate" class="form-control" />
+            </div>
+          </div>
+
+          <div class="col-12 mt-3">
+            <label class="checkbox-container">
+              <input type="checkbox" [(ngModel)]="formData.isActive" />
+              <span class="checkmark"></span>
+              <span class="checkbox-text">Is Coupon Active and Redeemable</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-box-footer">
+        <button class="btn btn-secondary" (click)="showModal = false">Cancel</button>
+        <button class="btn btn-primary" (click)="saveCoupon()">
+          <i class="fa-solid fa-floppy-disk me-1"></i> {{ editingId === 0 ? 'Create Coupon' : 'Save Changes' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Coupon Modal -->
+  <div *ngIf="showDeleteModal" class="modal-overlay-backdrop">
+    <div class="modal-box-glass modal-box-sm border-danger">
+      <div class="modal-delete-content text-center p-4">
+        <div class="delete-icon-animated mb-3">
+          <i class="fa-solid fa-triangle-exclamation text-danger fa-3x"></i>
+        </div>
+        <h4 class="text-danger fw-bold mb-2">Delete Coupon?</h4>
+        <p class="text-muted mb-3">
+          Are you sure you want to delete promo code:
+          <br />
+          <strong class="text-dark fs-5 text-uppercase">{{ couponToDelete?.code }}</strong>?
+        </p>
+        <div class="alert alert-warning text-start small mb-4">
+          <i class="fa-solid fa-circle-info me-1"></i>
+          Customers will no longer be able to use this discount code at checkout.
+        </div>
+        <div class="d-flex justify-content-center gap-3">
+          <button class="btn btn-secondary" (click)="showDeleteModal = false" [disabled]="isDeleting">Cancel</button>
+          <button class="btn btn-danger" (click)="confirmDelete()" [disabled]="isDeleting">
+            <span *ngIf="!isDeleting"><i class="fa-solid fa-trash-can me-1"></i> Yes, Delete</span>
+            <span *ngIf="isDeleting"><i class="fa-solid fa-spinner fa-spin me-1"></i> Deleting...</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

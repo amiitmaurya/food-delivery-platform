@@ -1,0 +1,40 @@
+2026-07-28 19:54:56.217 +05:30 [WRN] You do not have a valid license key for the Lucky Penny software AutoMapper. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-07-28 19:54:56.192 +05:30 [ERR] Unhandled Exception occurred while processing request.
+System.Exception: Testing Serilog
+   at MiniSwiggy.Controllers.RestaurantController.GetAll() in D:\Food Website\MiniSwiggy\MiniSwiggy\Controllers\RestaurantController.cs:line 20
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at MiniSwiggy.API.Middleware.ExceptionMiddleware.InvokeAsync(HttpContext context) in D:\Food Website\MiniSwiggy\MiniSwiggy\Middleware\ExceptionMiddleware.cs:line 23
+2026-07-28 20:56:31.376 +05:30 [INF] HTTP GET /swagger/index.html responded 304 in 254.3853 ms
+2026-07-28 20:56:31.594 +05:30 [INF] HTTP GET /swagger/index.css responded 304 in 24.7737 ms
+2026-07-28 20:56:31.594 +05:30 [INF] HTTP GET /swagger/swagger-ui.css responded 304 in 24.7744 ms
+2026-07-28 20:56:31.594 +05:30 [INF] HTTP GET /swagger/swagger-ui-standalone-preset.js responded 304 in 21.6746 ms
+2026-07-28 20:56:31.599 +05:30 [INF] HTTP GET /swagger/index.js responded 304 in 0.6723 ms
+2026-07-28 20:56:31.604 +05:30 [INF] HTTP GET /swagger/swagger-ui-bundle.js responded 304 in 31.3003 ms
+2026-07-28 20:56:32.007 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 115.7004 ms
+2026-07-28 20:56:53.481 +05:30 [INF] HTTP GET /api/Restaurant/5000 responded 404 in 656.6097 ms
+2026-07-28 21:00:59.792 +05:30 [INF] HTTP GET /swagger/index.html responded 304 in 250.3769 ms
+2026-07-28 21:01:00.091 +05:30 [INF] HTTP GET /swagger/swagger-ui.css responded 304 in 30.1525 ms
+2026-07-28 21:01:00.093 +05:30 [INF] HTTP GET /swagger/index.css responded 304 in 31.4531 ms
+2026-07-28 21:01:00.142 +05:30 [INF] HTTP GET /swagger/index.js responded 304 in 0.6225 ms
+2026-07-28 21:01:00.142 +05:30 [INF] HTTP GET /swagger/swagger-ui-bundle.js responded 304 in 80.9734 ms
+2026-07-28 21:01:00.142 +05:30 [INF] HTTP GET /swagger/swagger-ui-standalone-preset.js responded 304 in 40.4944 ms
+2026-07-28 21:01:00.536 +05:30 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 101.0836 ms
+2026-07-28 21:02:24.072 +05:30 [INF] HTTP POST /api/Auth/login responded 200 in 2214.3278 ms
+2026-07-28 21:03:26.521 +05:30 [INF] HTTP POST /api/Auth/register responded 400 in 177.5442 ms
+2026-07-28 21:04:14.772 +05:30 [INF] HTTP POST /api/Auth/register responded 200 in 890.2169 ms
+2026-07-28 21:05:15.339 +05:30 [INF] HTTP POST /api/Auth/login responded 200 in 231.5872 ms
+2026-07-28 21:05:33.366 +05:30 [INF] HTTP GET /api/Restaurant responded 200 in 119.8301 ms
+2026-07-28 21:05:44.450 +05:30 [INF] HTTP GET /api/Restaurant/10 responded 404 in 54.7464 ms

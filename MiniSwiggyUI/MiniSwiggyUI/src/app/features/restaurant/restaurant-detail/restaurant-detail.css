@@ -1,0 +1,472 @@
+/* ==========================================================
+   MINISWIGGY - GLASSMORPHISM RESTAURANT DETAIL & MENU
+   ========================================================== */
+
+.restaurant-detail-page {
+  padding-top: 1.5rem;
+  padding-bottom: 5rem;
+}
+
+.back-btn {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+  padding: 0.5rem 1.15rem;
+  border-radius: var(--radius-pill);
+  transition: var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  box-shadow: var(--shadow-xs);
+}
+
+.back-btn:hover {
+  color: var(--primary);
+  border-color: var(--primary);
+  background: #ffffff;
+  transform: translateX(-3px);
+  box-shadow: var(--shadow-sm);
+}
+
+.restaurant-hero-card {
+  padding: 2.25rem 2.5rem;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-glass);
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 2.5rem;
+  align-items: center;
+  box-shadow: var(--shadow-glass);
+  position: relative;
+  overflow: hidden;
+}
+
+.restaurant-hero-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--primary-gradient);
+}
+
+.res-title {
+  font-size: 2.1rem;
+  font-weight: 900;
+  margin: 0;
+  letter-spacing: -0.03em;
+  color: var(--text-main);
+}
+
+.title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  gap: 1rem;
+}
+
+.res-rating-badge {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  color: #ffffff;
+  padding: 0.35rem 0.85rem;
+  border-radius: 8px;
+  font-weight: 800;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  box-shadow: 0 4px 14px rgba(34, 197, 94, 0.35);
+  flex-shrink: 0;
+}
+
+.res-rating-badge i {
+  font-size: 0.85rem;
+}
+
+.cuisines-list {
+  color: var(--text-muted);
+  font-size: 0.98rem;
+  font-weight: 600;
+  margin-bottom: 0.35rem;
+}
+
+.location-info {
+  font-size: 0.88rem;
+  color: var(--text-light);
+  display: flex;
+  align-items: center;
+}
+
+.meta-row {
+  display: flex;
+  gap: 2.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border-color);
+  flex-wrap: wrap;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.meta-item i {
+  font-size: 1.4rem;
+  color: var(--primary);
+  filter: drop-shadow(0 2px 6px rgba(255, 82, 0, 0.3));
+}
+
+.meta-item div {
+  display: flex;
+  flex-direction: column;
+}
+
+.meta-item strong {
+  font-size: 0.98rem;
+  color: var(--text-main);
+  font-weight: 800;
+}
+
+.meta-item span {
+  font-size: 0.75rem;
+  color: var(--text-light);
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.hero-img {
+  width: 100%;
+  height: 190px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+  border: 2px solid rgba(255, 255, 255, 0.9);
+}
+
+/* Dish Filter & Search Bar */
+.menu-filter-bar {
+  padding: 1.15rem 1.75rem;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-glass);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  box-shadow: var(--shadow-glass);
+}
+
+.search-dishes-box {
+  position: relative;
+  flex: 1;
+  max-width: 420px;
+}
+
+.search-dishes-box i {
+  position: absolute;
+  left: 1.15rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-light);
+  font-size: 0.9rem;
+}
+
+.search-dishes-box input {
+  width: 100%;
+  padding: 0.65rem 1.15rem 0.65rem 2.75rem;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid rgba(226, 232, 240, 0.9);
+  background: rgba(248, 250, 252, 0.85);
+  backdrop-filter: blur(8px);
+  font-size: 0.88rem;
+  transition: var(--transition-fast);
+}
+
+.search-dishes-box input:focus {
+  outline: none;
+  background: #ffffff;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(255, 82, 0, 0.12);
+}
+
+.diet-pills {
+  display: flex;
+  gap: 0.65rem;
+}
+
+.diet-pill {
+  padding: 0.45rem 1rem;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid rgba(226, 232, 240, 0.9);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: var(--transition-fast);
+  color: var(--text-secondary);
+}
+
+.diet-pill:hover {
+  border-color: var(--primary);
+  transform: translateY(-1px);
+}
+
+.veg-pill.active {
+  background: #dcfce7;
+  border-color: #16a34a;
+  color: #15803d;
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.2);
+}
+
+.nonveg-pill.active {
+  background: #fee2e2;
+  border-color: #dc2626;
+  color: #b91c1c;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
+}
+
+.section-heading {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 1.25rem;
+}
+
+/* Dishes Grid */
+.dishes-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.dish-card {
+  padding: 1.5rem 1.75rem;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  align-items: center;
+  box-shadow: var(--shadow-glass);
+  transition: var(--transition-normal);
+}
+
+.dish-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 35px -8px rgba(0, 0, 0, 0.1);
+  border-color: rgba(255, 82, 0, 0.25);
+}
+
+.dish-info {
+  flex: 1;
+}
+
+.dish-name {
+  font-size: 1.15rem;
+  font-weight: 800;
+  margin: 0;
+  color: var(--text-main);
+  letter-spacing: -0.01em;
+}
+
+.dish-price-row {
+  margin: 0.45rem 0;
+  font-weight: 800;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.dish-price {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.original-price, .offer-price {
+  font-size: 0.9rem;
+  color: var(--text-light);
+  text-decoration: line-through;
+  font-weight: 500;
+}
+
+.dish-desc {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  margin: 0;
+  max-width: 620px;
+  line-height: 1.5;
+}
+
+.dish-action-col {
+  position: relative;
+  width: 130px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.dish-img {
+  width: 120px;
+  height: 105px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+  border: 1.5px solid rgba(255, 255, 255, 0.9);
+}
+
+.add-btn-wrapper {
+  position: absolute;
+  bottom: -14px;
+}
+
+.add-btn {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  color: var(--primary);
+  border: 1.5px solid var(--primary);
+  font-weight: 800;
+  font-size: 0.85rem;
+  padding: 0.4rem 1.25rem;
+  border-radius: var(--radius-pill);
+  box-shadow: 0 4px 14px rgba(255, 82, 0, 0.25);
+  transition: var(--transition-fast);
+}
+
+.add-btn:hover {
+  background: var(--primary-gradient);
+  color: #ffffff;
+  box-shadow: var(--shadow-primary);
+  transform: translateY(-2px);
+}
+
+.qty-control-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  background: var(--primary-gradient);
+  color: #ffffff;
+  padding: 0.35rem 0.85rem;
+  border-radius: var(--radius-pill);
+  font-weight: 800;
+  font-size: 0.9rem;
+  box-shadow: var(--shadow-primary);
+}
+
+.qty-control-btn button {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  padding: 0 4px;
+  font-size: 0.85rem;
+  transition: var(--transition-fast);
+}
+
+.qty-control-btn button:hover {
+  transform: scale(1.2);
+}
+
+/* Customer Reviews */
+.reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+
+.review-card {
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-glass);
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+}
+
+.reviewer-name {
+  font-size: 0.98rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.review-date {
+  font-size: 0.78rem;
+  color: var(--text-light);
+}
+
+.review-rating {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  color: #ffffff;
+  padding: 0.2rem 0.65rem;
+  border-radius: 6px;
+  font-weight: 800;
+  font-size: 0.82rem;
+  box-shadow: 0 2px 6px rgba(34, 197, 94, 0.3);
+}
+
+.review-comment {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  font-style: italic;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .restaurant-hero-card {
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+    padding: 1.75rem;
+  }
+  .hero-img {
+    height: 170px;
+  }
+}
+
+@media (max-width: 576px) {
+  .dish-card {
+    flex-direction: column-reverse;
+    align-items: flex-start;
+    gap: 1.25rem;
+    padding: 1.25rem;
+  }
+  .dish-action-col {
+    width: 100%;
+    align-items: flex-end;
+  }
+  .dish-img {
+    width: 100%;
+    height: 140px;
+  }
+  .add-btn-wrapper {
+    position: static;
+    margin-top: -16px;
+    margin-right: 12px;
+  }
+}

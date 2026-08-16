@@ -1,0 +1,270 @@
+<div class="delivery-master-container container-fluid px-lg-4 py-3">
+  <!-- Page Header Card -->
+  <div class="page-header-card glass-card mb-4">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+      <div>
+        <div class="header-pill-badge">
+          <i class="fa-solid fa-person-biking text-primary me-1"></i> Fleet Management Master
+        </div>
+        <h2 class="page-title">Delivery Partner Master</h2>
+        <p class="page-subtitle">Manage on-duty delivery fleet riders, vehicle registration numbers, driving licenses, and payout details</p>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <button class="btn btn-sm btn-outline-secondary" (click)="loadPartners()">
+          <i class="fa-solid fa-arrows-rotate me-1"></i> Refresh Fleet
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter & Search Toolbar -->
+  <div class="glass-card filter-toolbar-card mb-4">
+    <div class="toolbar-flex-container">
+      <div class="toolbar-search-box">
+        <i class="fa-solid fa-magnifying-glass search-leading-icon"></i>
+        <input 
+          type="text" 
+          [(ngModel)]="searchQuery" 
+          class="form-control toolbar-search-input" 
+          placeholder="Search riders, phone, vehicle reg number or bank..." 
+        />
+        <button *ngIf="searchQuery" class="search-clear-btn" (click)="searchQuery = ''">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="ms-auto d-flex align-items-center gap-2">
+        <span class="badge bg-light text-dark border px-3 py-2 fs-6">
+          <strong>{{ filteredPartners.length }}</strong> of <strong>{{ partners.length }}</strong> Fleet Riders
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="glass-card loading-box text-center my-4 p-5">
+    <i class="fa-solid fa-circle-notch fa-spin fa-2x text-primary mb-3"></i>
+    <h5>Loading delivery fleet partners...</h5>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && filteredPartners.length === 0" class="glass-card text-center my-4 p-5">
+    <i class="fa-solid fa-person-biking fa-3x text-muted mb-3"></i>
+    <h4>No Delivery Partners Found</h4>
+    <p class="text-muted">No riders match your search criteria.</p>
+  </div>
+
+  <!-- Table Card -->
+  <div *ngIf="!isLoading && filteredPartners.length > 0" class="glass-card user-table-card p-3 mb-4">
+    <div class="table-responsive">
+      <table class="table custom-unified-table align-middle mb-0">
+        <thead>
+          <tr>
+            <th style="min-width: 220px;">Rider Details</th>
+            <th style="min-width: 170px;">Vehicle & Model</th>
+            <th style="min-width: 150px;">Registration No.</th>
+            <th style="min-width: 170px;">Driving License</th>
+            <th style="min-width: 170px;">Bank / UPI Payout</th>
+            <th style="min-width: 110px;">Status</th>
+            <th style="min-width: 110px;" class="text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let partner of filteredPartners" [class.row-closed]="!partner.isOnline">
+            <!-- Rider Details -->
+            <td>
+              <div class="d-flex align-items-center gap-3">
+                <div class="rider-avatar-icon">
+                  <i class="fa-solid fa-helmet-safety"></i>
+                </div>
+                <div>
+                  <strong class="rider-name">{{ partner.fullName }}</strong>
+                  <div class="text-muted small"><i class="fa-solid fa-phone me-1 text-muted"></i>{{ partner.phoneNumber }}</div>
+                </div>
+              </div>
+            </td>
+
+            <!-- Vehicle & Model -->
+            <td>
+              <div class="fw-bold">{{ partner.vehicleModel || 'Hero Splendor' }}</div>
+              <span class="badge bg-light text-muted border small">{{ partner.vehicleType || 'Bike' }}</span>
+            </td>
+
+            <!-- Registration No. -->
+            <td>
+              <span class="badge bg-dark text-white px-2 py-1">{{ partner.vehicleNumber || 'MH-12-AB-1234' }}</span>
+            </td>
+
+            <!-- License Info -->
+            <td>
+              <div class="small fw-bold">{{ partner.licenseNumber || 'DL-9876543210' }}</div>
+              <div class="text-muted small">Exp: {{ partner.licenseExpiryDate || '2029-12-31' }}</div>
+            </td>
+
+            <!-- Bank / UPI -->
+            <td>
+              <div class="small fw-bold">{{ partner.bankName || 'HDFC Bank' }}</div>
+              <div class="text-muted small text-truncate" style="max-width: 160px;">{{ partner.upiId || 'rider@upi' }}</div>
+            </td>
+
+            <!-- Status -->
+            <td>
+              <span *ngIf="partner.isOnline" class="status-chip chip-active">
+                <i class="fa-solid fa-circle me-1 small-dot"></i> ONLINE
+              </span>
+              <span *ngIf="!partner.isOnline" class="status-chip chip-inactive">
+                <i class="fa-solid fa-circle me-1 small-dot"></i> OFFLINE
+              </span>
+            </td>
+
+            <!-- Actions (Edit and Toggle Online/Offline) -->
+            <td class="text-end">
+              <div class="action-buttons-group">
+                <button class="btn-icon-action btn-edit" (click)="openEditModal(partner)" title="Edit Partner">
+                  <i class="fa-solid fa-pen"></i>
+                </button>
+                <button 
+                  class="btn-icon-action" 
+                  [ngClass]="partner.isOnline ? 'btn-toggle-active' : 'btn-toggle-inactive'" 
+                  (click)="toggleOnline(partner)" 
+                  [title]="partner.isOnline ? 'Set Partner Offline' : 'Set Partner Online'"
+                >
+                  <i class="fa-solid" [ngClass]="partner.isOnline ? 'fa-toggle-on' : 'fa-toggle-off'"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- EDIT PARTNER MODAL -->
+  <div *ngIf="showEditModal" class="modal-overlay-backdrop">
+    <div class="modal-box-glass modal-box-lg">
+      <div class="modal-box-header">
+        <div class="d-flex align-items-center gap-3">
+          <div class="modal-box-icon edit-icon">
+            <i class="fa-solid fa-person-biking"></i>
+          </div>
+          <div>
+            <h4>Edit Delivery Partner Profile</h4>
+            <span class="text-muted small">Update vehicle model, registration number, driving license & banking info</span>
+          </div>
+        </div>
+        <button class="modal-close-icon-btn" (click)="showEditModal = false"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="modal-box-body">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label fw-bold">Vehicle Type</label>
+            <div class="input-icon-field">
+              <i class="fa-solid fa-motorcycle"></i>
+              <input type="text" [(ngModel)]="editFormData.vehicleType" class="form-control" placeholder="Bike / EV Scooter" />
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-bold">Vehicle Model</label>
+            <div class="input-icon-field">
+              <i class="fa-solid fa-car-side"></i>
+              <input type="text" [(ngModel)]="editFormData.vehicleModel" class="form-control" placeholder="e.g. Hero Splendor" />
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-bold">Vehicle Number *</label>
+            <div class="input-icon-field">
+              <i class="fa-solid fa-id-card"></i>
+              <input type="text" [(ngModel)]="editFormData.vehicleNumber" class="form-control text-uppercase" placeholder="MH-12-AB-1234" />
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-bold">Driving License Number</label>
+            <div class="input-icon-field">
+              <i class="fa-solid fa-address-card"></i>
+              <input type="text" [(ngModel)]="editFormData.licenseNumber" class="form-control text-uppercase" placeholder="DL-9876543210" />
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-bold">Bank Name</label>
+            <div class="input-icon-field">
+              <i class="fa-solid fa-building-columns"></i>
+              <input type="text" [(ngModel)]="editFormData.bankName" class="form-control" placeholder="HDFC Bank" />
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-bold">Bank Account Number</label>
+            <div class="input-icon-field">
+              <i class="fa-solid fa-money-check"></i>
+              <input type="text" [(ngModel)]="editFormData.accountNumber" class="form-control" placeholder="1234567890" />
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-bold">IFSC Code</label>
+            <div class="input-icon-field">
+              <i class="fa-solid fa-barcode"></i>
+              <input type="text" [(ngModel)]="editFormData.ifscCode" class="form-control text-uppercase" placeholder="HDFC0001234" />
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-bold">UPI ID</label>
+            <div class="input-icon-field">
+              <i class="fa-solid fa-mobile-screen-button"></i>
+              <input type="text" [(ngModel)]="editFormData.upiId" class="form-control" placeholder="rider@upi" />
+            </div>
+          </div>
+
+          <div class="col-12 mt-3">
+            <label class="checkbox-container">
+              <input type="checkbox" [(ngModel)]="editFormData.isOnline" />
+              <span class="checkmark"></span>
+              <span class="checkbox-text">Rider is currently Online and Available for Delivery</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-box-footer">
+        <button class="btn btn-secondary" (click)="showEditModal = false">Cancel</button>
+        <button class="btn btn-primary" (click)="savePartnerEdit()">
+          <i class="fa-solid fa-floppy-disk me-1"></i> Save Changes
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DELETE MODAL -->
+  <div *ngIf="showDeleteModal" class="modal-overlay-backdrop">
+    <div class="modal-box-glass modal-box-sm border-danger">
+      <div class="modal-delete-content text-center p-4">
+        <div class="delete-icon-animated mb-3">
+          <i class="fa-solid fa-triangle-exclamation text-danger fa-3x"></i>
+        </div>
+        <h4 class="text-danger fw-bold mb-2">Remove Delivery Partner?</h4>
+        <p class="text-muted mb-3">
+          Are you sure you want to remove rider:
+          <br />
+          <strong class="text-dark fs-5">{{ partnerToDelete?.fullName }}</strong>?
+        </p>
+        <div class="alert alert-warning text-start small mb-4">
+          <i class="fa-solid fa-circle-info me-1"></i>
+          This will revoke their rider profile bindings and active vehicle allocations.
+        </div>
+        <div class="d-flex justify-content-center gap-3">
+          <button class="btn btn-secondary" (click)="showDeleteModal = false" [disabled]="isDeleting">Cancel</button>
+          <button class="btn btn-danger" (click)="confirmDelete()" [disabled]="isDeleting">
+            <span *ngIf="!isDeleting"><i class="fa-solid fa-trash-can me-1"></i> Yes, Remove</span>
+            <span *ngIf="isDeleting"><i class="fa-solid fa-spinner fa-spin me-1"></i> Removing...</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

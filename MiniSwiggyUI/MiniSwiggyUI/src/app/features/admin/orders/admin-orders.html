@@ -1,0 +1,91 @@
+<div class="admin-orders-page container">
+  <div class="page-header">
+    <div>
+      <h2><i class="fa-solid fa-boxes-packing me-2 text-primary"></i> Order Status & Cancellation Manager</h2>
+      <p>Monitor live customer orders, dispatch status, and cancellations in real-time</p>
+    </div>
+    <button class="btn btn-secondary" (click)="loadOrders()">
+      <i class="fa-solid fa-arrows-rotate me-1"></i> Refresh Orders
+    </button>
+  </div>
+
+  <div class="glass-card table-card">
+    <div *ngIf="isLoading" class="p-4 text-center">
+      <i class="fa-solid fa-spinner fa-spin fa-2x text-primary"></i>
+      <p class="mt-2 text-muted">Loading live orders...</p>
+
+    </div>
+
+    <div *ngIf="!isLoading" class="table-responsive">
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th class="th-id">Order ID</th>
+            <th class="th-customer">Customer / User</th>
+            <th class="th-date">Date & Time</th>
+            <th class="th-addr">Delivery Address</th>
+            <th class="th-items">Ordered Items</th>
+            <th class="th-total">Total Paid</th>
+            <th class="th-status">Order Status</th>
+            <th class="text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let order of orders">
+            <td class="td-id">
+              <strong class="order-id-badge">#{{ order.id }}</strong>
+            </td>
+            <td class="td-customer">
+              <span class="fw-bold text-dark">{{ order.userName || 'Customer' }}</span>
+            </td>
+            <td class="td-date">{{ order.orderDate | date:'medium' }}</td>
+            <td class="td-addr">
+              <div class="address-text"><i class="fa-solid fa-location-dot me-1 text-primary"></i>{{ order.deliveryAddress }}</div>
+            </td>
+            <td class="td-items">
+              <div class="order-items-flex">
+                <span *ngFor="let item of order.items" class="item-pill">
+                  {{ item.quantity }}x {{ item.foodItemName }}
+                </span>
+              </div>
+            </td>
+            <td class="td-total">
+              <strong class="total-paid-text">₹{{ order.finalAmount }}</strong>
+            </td>
+            <td class="td-status">
+              <span 
+                class="status-badge"
+                [class.status-success]="order.status === 'Delivered'"
+                [class.status-warning]="order.status === 'Confirmed' || order.status === 'Preparing' || order.status === 'Placed'"
+                [class.status-info]="order.status === 'Out for Delivery'"
+                [class.status-danger]="order.status === 'Cancelled'"
+              >
+                <i *ngIf="order.status === 'Delivered'" class="fa-solid fa-circle-check me-1"></i>
+                <i *ngIf="order.status === 'Cancelled'" class="fa-solid fa-circle-xmark me-1"></i>
+                <i *ngIf="order.status === 'Confirmed'" class="fa-solid fa-thumbs-up me-1"></i>
+                <i *ngIf="order.status === 'Preparing'" class="fa-solid fa-fire-burner me-1"></i>
+                <i *ngIf="order.status === 'Out for Delivery'" class="fa-solid fa-motorcycle me-1"></i>
+                <i *ngIf="order.status === 'Placed'" class="fa-solid fa-receipt me-1"></i>
+                {{ order.status }}
+              </span>
+            </td>
+            <td class="text-end">
+              <button 
+                *ngIf="order.status !== 'Cancelled'" 
+                class="btn btn-outline-danger btn-sm" 
+                [disabled]="order.status === 'Delivered'"
+                (click)="cancelOrder(order)"
+                [title]="order.status === 'Delivered' ? 'Delivered orders cannot be cancelled' : 'Cancel this order'"
+              >
+                <i class="fa-solid fa-ban me-1"></i> Cancel
+              </button>
+              <span *ngIf="order.status === 'Cancelled'" class="badge bg-danger-light text-danger fw-bold">
+                Cancelled
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

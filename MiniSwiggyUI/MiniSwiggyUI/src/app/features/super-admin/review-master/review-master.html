@@ -1,0 +1,86 @@
+<div class="review-master-container container-fluid px-lg-4 py-3">
+  <!-- Page Header Card -->
+  <div class="page-header-card glass-card mb-4">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+      <div>
+        <div class="header-pill-badge">
+          <i class="fa-solid fa-star text-primary me-1"></i> Feedback & Ratings Master
+        </div>
+        <h2 class="page-title">Review & Ratings Master</h2>
+        <p class="page-subtitle">Moderate customer reviews, star ratings, and feedback across restaurants and dishes</p>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <button class="btn btn-sm btn-outline-secondary" (click)="loadReviews()">
+          <i class="fa-solid fa-arrows-rotate me-1"></i> Refresh Reviews
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter & Search Toolbar -->
+  <div class="glass-card filter-toolbar-card mb-4">
+    <div class="toolbar-flex-container">
+      <div class="toolbar-search-box">
+        <i class="fa-solid fa-magnifying-glass search-leading-icon"></i>
+        <input 
+          type="text" 
+          [(ngModel)]="searchQuery" 
+          class="form-control toolbar-search-input" 
+          placeholder="Search reviews, food, user or keywords..." 
+        />
+        <button *ngIf="searchQuery" class="search-clear-btn" (click)="searchQuery = ''">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="toolbar-pills-group ms-auto">
+        <button class="filter-pill-btn" [class.pill-active]="selectedRatingFilter === 0" (click)="selectedRatingFilter = 0">All Ratings</button>
+        <button class="filter-pill-btn" [class.pill-active]="selectedRatingFilter === 5" (click)="selectedRatingFilter = 5">★ 5 Stars</button>
+        <button class="filter-pill-btn" [class.pill-active]="selectedRatingFilter === 4" (click)="selectedRatingFilter = 4">★ 4 Stars</button>
+        <button class="filter-pill-btn" [class.pill-active]="selectedRatingFilter === 1" (click)="selectedRatingFilter = 1">★ 1 Star Critical</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="glass-card loading-box text-center my-4 p-5">
+    <i class="fa-solid fa-circle-notch fa-spin fa-2x text-primary mb-3"></i>
+    <h5>Loading platform reviews...</h5>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && filteredReviews.length === 0" class="glass-card text-center my-4 p-5">
+    <i class="fa-solid fa-comments fa-3x text-muted mb-3"></i>
+    <h4>No Reviews Found</h4>
+    <p class="text-muted">No customer ratings or reviews match your active filter.</p>
+  </div>
+
+  <!-- Reviews List Grid -->
+  <div *ngIf="!isLoading && filteredReviews.length > 0" class="row g-4 mb-4">
+    <div *ngFor="let rev of filteredReviews" class="col-md-6">
+      <div class="glass-card review-modern-card p-4 h-100 d-flex flex-column justify-content-between">
+        <div>
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div class="d-flex align-items-center gap-3">
+              <div class="user-avatar-sm">
+                {{ rev.userName?.charAt(0) || 'U' }}
+              </div>
+              <div>
+                <strong class="user-name-text">{{ rev.userName || 'Customer' }}</strong>
+                <div class="text-muted small">{{ rev.createdOn | date:'dd MMM yyyy' }}</div>
+              </div>
+            </div>
+            <span class="badge bg-warning text-dark fs-6 fw-bold px-2 py-1">★ {{ rev.rating }}.0</span>
+          </div>
+
+          <div class="mb-3 d-flex flex-wrap gap-1">
+            <span class="badge bg-light text-dark border"><i class="fa-solid fa-bowl-food text-primary me-1"></i>{{ rev.foodName || 'Dish' }}</span>
+            <span class="badge bg-light text-muted border"><i class="fa-solid fa-store me-1"></i>{{ rev.restaurantName || 'Restaurant' }}</span>
+          </div>
+
+          <p class="review-comment-text text-muted mb-0">"{{ rev.comment }}"</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

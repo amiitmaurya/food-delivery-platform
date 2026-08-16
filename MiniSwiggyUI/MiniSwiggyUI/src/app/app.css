@@ -1,0 +1,161 @@
+/* ==========================================================
+   MINISWIGGY - APP ROOT LAYOUT
+   ========================================================== */
+
+:host {
+  display: block;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.app-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background: transparent;
+}
+
+.app-body {
+  display: flex;
+  flex: 1;
+  width: 100%;
+  position: relative;
+}
+
+.main-content {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+}
+
+.auth-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+}
+
+/* ==========================================================
+   SESSION TIMEOUT POPUP MODAL (Only Okay Button)
+   ========================================================== */
+.session-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  animation: sessionFadeIn 0.3s ease-out;
+}
+
+.session-modal-card {
+  background: #ffffff;
+  border-radius: 24px;
+  width: 100%;
+  max-width: 440px;
+  padding: 2.25rem 2rem 2rem;
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(226, 232, 240, 0.9);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  animation: sessionZoomIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.session-modal-icon-wrapper {
+  margin-bottom: 1.25rem;
+  display: flex;
+  justify-content: center;
+}
+
+.session-icon-circle {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: rgba(245, 158, 11, 0.12);
+  border: 2px solid rgba(245, 158, 11, 0.3);
+  color: #d97706;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  animation: iconPulse 2s infinite ease-in-out;
+}
+
+.session-title {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.02em;
+}
+
+.session-subtitle {
+  font-size: 0.92rem;
+  color: #64748b;
+  line-height: 1.55;
+  margin-bottom: 1rem;
+}
+
+.session-alert-note {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 0.65rem 1rem;
+  font-size: 0.85rem;
+  color: #475569;
+  margin-bottom: 1.5rem;
+}
+
+.session-modal-actions {
+  display: flex;
+  justify-content: center;
+}
+
+.session-okay-btn {
+  width: 100%;
+  max-width: 220px;
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 800;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #ff6b2b, #ff5200);
+  border: none;
+  color: #ffffff;
+  box-shadow: 0 4px 16px rgba(255, 82, 0, 0.35);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.session-okay-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(255, 82, 0, 0.45);
+}
+
+.session-okay-btn:active {
+  transform: translateY(0);
+}
+
+@keyframes sessionFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes sessionZoomIn {
+  from { opacity: 0; transform: scale(0.92) translateY(16px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes iconPulse {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
+  70% { transform: scale(1.05); box-shadow: 0 0 0 12px rgba(245, 158, 11, 0); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+}
