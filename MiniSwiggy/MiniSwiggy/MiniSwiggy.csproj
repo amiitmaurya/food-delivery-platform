@@ -37,8 +37,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Configurations\" />
-    <Folder Include="Extensions\" />
     <Folder Include="wwwroot\uploads\restaurants\" />
   </ItemGroup>
 

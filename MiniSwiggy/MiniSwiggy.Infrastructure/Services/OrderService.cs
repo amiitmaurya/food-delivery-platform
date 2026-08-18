@@ -202,7 +202,7 @@ public class OrderService : IOrderService
             DeliveryAddress = request.DeliveryAddress,
             PhoneNumber = request.PhoneNumber,
             PaymentMethod = request.PaymentMethod,
-            PaymentStatus = PaymentStatus.Pending,
+            PaymentStatus = (request.PaymentMethod == PaymentMethod.CashOnDelivery) ? PaymentStatus.Pending : PaymentStatus.Paid,
             Status = OrderStatus.Pending,
             OrderDate = DateTime.UtcNow
         };
@@ -242,14 +242,17 @@ public class OrderService : IOrderService
             }
         }
 
-        // 4b. Record Payment in Payments table (for both COD and Online / UPI)
+        // 4b. Record Payment in Payments table (for both COD and Online / UPI / Card)
+        var isOnlinePaid = order.PaymentMethod != PaymentMethod.CashOnDelivery;
         var payment = new Payment
         {
             OrderId = order.Id,
             Amount = order.FinalAmount,
             PaymentMethod = order.PaymentMethod,
-            PaymentStatus = order.PaymentStatus,
-            CreatedOn = DateTime.UtcNow
+            PaymentStatus = isOnlinePaid ? PaymentStatus.Paid : PaymentStatus.Pending,
+            TransactionId = isOnlinePaid ? $"TXN{DateTime.UtcNow:yyyyMMddHHmmss}{new Random().Next(100, 999)}" : null,
+            CreatedOn = DateTime.UtcNow,
+            PaidOn = isOnlinePaid ? DateTime.UtcNow : null
         };
         await _unitOfWork.Payments.AddAsync(payment);
         await _unitOfWork.SaveChangesAsync();

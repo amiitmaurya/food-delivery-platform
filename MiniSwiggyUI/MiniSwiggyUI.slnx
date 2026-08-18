@@ -1,3 +1,6 @@
 <Solution>
-  <Project Path="MiniSwiggyUI/MiniSwiggyUI.esproj" />
+  <Project Path="MiniSwiggyUI/MiniSwiggyUI.esproj">
+    <Build />
+    <Deploy />
+  </Project>
 </Solution>

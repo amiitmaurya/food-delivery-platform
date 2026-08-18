@@ -79,3 +79,36 @@
 2026-08-17 00:19:30.930 +05:30 [INF] HTTP GET /api/Cart responded 200 in 128.5867 ms
 2026-08-17 00:19:30.954 +05:30 [INF] HTTP GET /api/Address responded 200 in 17.3921 ms
 2026-08-17 00:19:30.987 +05:30 [INF] HTTP GET /api/Address responded 200 in 14.6050 ms
+2026-08-17 01:02:07.468 +05:30 [WRN] No store type was specified for the decimal property 'DeliveryEarnings' on entity type 'DeliveryOrderTracker'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-08-17 01:02:07.541 +05:30 [WRN] No store type was specified for the decimal property 'Discount' on entity type 'Restaurant'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-08-17 01:03:33.120 +05:30 [INF] HTTP OPTIONS /api/Address responded 204 in 137.9464 ms
+2026-08-17 01:03:33.019 +05:30 [INF] HTTP OPTIONS /api/ModulePermission/my-permissions responded 204 in 147.0117 ms
+2026-08-17 01:03:33.019 +05:30 [INF] HTTP OPTIONS /api/Address responded 204 in 168.9973 ms
+2026-08-17 01:03:33.019 +05:30 [INF] HTTP OPTIONS /api/Cart responded 204 in 169.1251 ms
+2026-08-17 01:03:33.698 +05:30 [INF] HTTP GET /uploads/users/3a35273e-fc5b-48d8-b085-34b5eb6df4ea.png responded 200 in 862.3520 ms
+2026-08-17 01:03:39.109 +05:30 [INF] HTTP GET /api/Address responded 401 in 5488.9317 ms
+2026-08-17 01:03:39.109 +05:30 [INF] HTTP GET /api/Address responded 401 in 5523.7666 ms
+2026-08-17 01:03:39.109 +05:30 [INF] HTTP GET /api/Cart responded 401 in 5481.9537 ms
+2026-08-17 01:03:39.109 +05:30 [INF] HTTP GET /api/ModulePermission/my-permissions responded 401 in 5523.0285 ms
+2026-08-17 01:03:41.260 +05:30 [INF] HTTP OPTIONS /api/Cart responded 204 in 0.1622 ms
+2026-08-17 01:03:41.362 +05:30 [INF] HTTP OPTIONS /api/ModulePermission/my-permissions responded 204 in 0.0980 ms
+2026-08-17 01:03:41.468 +05:30 [INF] HTTP OPTIONS /api/Address responded 204 in 0.1048 ms
+2026-08-17 01:03:41.455 +05:30 [INF] HTTP OPTIONS /api/Address responded 204 in 0.0990 ms
+2026-08-17 01:03:42.800 +05:30 [INF] HTTP GET /uploads/users/3a35273e-fc5b-48d8-b085-34b5eb6df4ea.png responded 200 in 895.5381 ms
+2026-08-17 01:03:43.363 +05:30 [INF] HTTP GET /api/Address responded 200 in 1142.5898 ms
+2026-08-17 01:03:43.370 +05:30 [INF] HTTP GET /api/Address responded 200 in 1008.3812 ms
+2026-08-17 01:03:43.778 +05:30 [INF] HTTP OPTIONS /api/Auth/login responded 204 in 0.3222 ms
+2026-08-17 01:03:43.779 +05:30 [INF] HTTP GET /api/ModulePermission/my-permissions responded 200 in 1705.5640 ms
+2026-08-17 01:03:44.105 +05:30 [INF] HTTP GET /api/Cart responded 200 in 2190.5874 ms
+2026-08-17 01:03:46.346 +05:30 [INF] HTTP POST /api/Auth/login responded 200 in 2138.1311 ms
+2026-08-17 01:03:46.432 +05:30 [INF] HTTP OPTIONS /api/Restaurant responded 204 in 0.0867 ms
+2026-08-17 01:03:46.446 +05:30 [INF] HTTP OPTIONS /api/Category responded 204 in 0.1211 ms
+2026-08-17 01:03:46.447 +05:30 [INF] HTTP OPTIONS /api/FoodItem responded 204 in 0.1483 ms
+2026-08-17 01:03:46.450 +05:30 [INF] HTTP OPTIONS /api/Order/all responded 204 in 0.0909 ms
+2026-08-17 01:03:46.451 +05:30 [INF] HTTP GET /api/ModulePermission/my-permissions responded 200 in 75.8137 ms
+2026-08-17 01:03:46.457 +05:30 [INF] HTTP GET /api/Address responded 200 in 27.6699 ms
+2026-08-17 01:03:46.459 +05:30 [INF] HTTP GET /api/Address responded 200 in 22.6405 ms
+2026-08-17 01:03:46.875 +05:30 [INF] HTTP GET /api/Category responded 200 in 385.9273 ms
+2026-08-17 01:03:46.972 +05:30 [INF] HTTP GET /api/FoodItem responded 200 in 338.1157 ms
+2026-08-17 01:03:47.067 +05:30 [INF] HTTP GET /api/Restaurant responded 200 in 582.7911 ms
+2026-08-17 01:03:47.114 +05:30 [INF] HTTP GET /api/Order/all responded 200 in 460.8368 ms
